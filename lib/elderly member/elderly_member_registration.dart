@@ -6,7 +6,7 @@ class ElderlyRegistrationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color primaryGreen = const Color.fromARGB(255, 224, 255, 196);
+    final Color primaryGreen = const Color.fromARGB(255, 39, 255, 183);
 
     return Scaffold(
       backgroundColor: Colors.white,

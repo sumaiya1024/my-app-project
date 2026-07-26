@@ -1,0 +1,17 @@
+{
+  "welcome_message": "কিনভেরাতে আপনাকে স্বাগতম!\nচালিয়ে যেতে আপনার ভূমিকা বেছে নিন",
+  "care_ambassador_title": "কেয়ার অ্যাম্বাসেডর",
+  "care_ambassador_subtitle": "সিলেক্ট করুন, যদি আপনি সেবা প্রদান করতে চান",
+  "family_member_title": "পরিবারের সদস্য",
+  "family_member_subtitle": "সিলেক্ট করুন, যদি আপনি আপনার বাবা-মার জন্য কেয়ারগিভার খুঁজতে চান",
+  "elderly_member_title": "বয়স্ক সদস্য",
+  "elderly_member_subtitle": "সিলেক্ট করুন, যদি আপনি সেবা গ্রহণ করেন এবং সহজে সাহায্য পেতে চান",
+  "sign_in_continue": "চালিয়ে যেতে সাইন ইন করুন",
+  "email_address": "ইমেইল এড্রেস",
+  "password": "পাসওয়ার্ড",
+  "forgot_password": "পাসওয়ার্ড ভুলে গেছেন?",
+  "sign_in_btn": "সাইন ইন",
+  "no_account": "কোনো অ্যাকাউন্ট নেই?",
+  "sign_up_btn":"সাইন আপ"
+  
+}

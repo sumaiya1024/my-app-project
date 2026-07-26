@@ -7,7 +7,7 @@ class FamilyRegistrationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color primaryGreen = const Color.fromARGB(255, 229, 255, 207);
+    final Color primaryGreen = const Color.fromARGB(255, 39, 255, 183);
 
     return Scaffold(
       backgroundColor: Colors.white,

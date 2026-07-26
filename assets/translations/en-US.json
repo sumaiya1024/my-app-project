@@ -1,0 +1,18 @@
+
+
+{
+  "welcome_message": "Welcome to Kinvera!\nChoose your role to continue",
+  "care_ambassador_title": "Care Ambassador",
+  "care_ambassador_subtitle": "Select, if you want to provide care services",
+  "family_member_title": "Family Member",
+  "family_member_subtitle": "Select, if you are looking for a caregiver for your parents",
+  "elderly_member_title": "Elderly Member",
+  "elderly_member_subtitle": "Select, if you are receiving care and want easy access to help",
+  "sign_in_continue": "Sign In to continue",
+  "email_address": "Email Address",
+  "password": "Password",
+  "forgot_password": "Forgot Password?",
+  "sign_in_btn": "Sign In",
+  "no_account": "Don't have an account?",
+  "sign_up_btn": "Sign Up"
+}

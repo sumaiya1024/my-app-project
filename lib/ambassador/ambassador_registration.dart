@@ -11,7 +11,7 @@ class AmbassadorRegistrationScreen extends StatefulWidget {
 class _AmbassadorRegistrationScreenState
     extends State<AmbassadorRegistrationScreen> {
   int currentStep = 0;
-  final Color primaryGreen = const Color.fromARGB(255, 217, 253, 185);
+  final Color primaryGreen = const Color.fromARGB(255, 39, 255, 183);
 
   String? selectedCity;
   String? selectedArea;

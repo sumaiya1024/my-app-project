@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kinvera/lang.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'lang.dart';
 import 'ambassador/ambassador_registration.dart';
 import 'ambassador/ambassador_page.dart';
 import 'elderly member/elderly_member_registration.dart';
@@ -7,8 +8,18 @@ import 'elderly member/elderly_page.dart';
 import 'family member/family_registration.dart';
 import 'family member/family_page.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
+
+  runApp(
+    EasyLocalization(
+      supportedLocales: const [Locale('en', 'US'), Locale('bn', 'BD')],
+      path: 'assets/translations',
+      fallbackLocale: const Locale('en', 'US'),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -16,15 +27,25 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Splashscreen(),
+
+      // ==========================================
+      // এই হলো সেই 'স্টেপ ৩' (Step 3) এর কোডগুলো,
+      // যা আপনার MaterialApp-এর ভেতরে বসাতে হবে:
+      // ==========================================
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
+
+      home: const LanguageSelectionScreen(), // আপনার প্রথম স্ক্রিন
     );
   }
 }
 
 // ==========================================
 // ১. স্প্ল্যাশ স্ক্রিন
+// ==========================================
 // ==========================================
 class Splashscreen extends StatefulWidget {
   const Splashscreen({super.key});
@@ -41,7 +62,9 @@ class _SplashscreenState extends State<Splashscreen> {
       if (mounted) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => LanguageSelectionScreen()),
+          MaterialPageRoute(
+            builder: (context) => const LanguageSelectionScreen(),
+          ),
         );
       }
     });
@@ -119,7 +142,7 @@ class _SplashscreenState extends State<Splashscreen> {
 }
 
 // ==========================================
-// ২. রোল সিলেকশন স্ক্রিন (Clickable to Sign In)
+// ২. রোল সিলেকশন স্ক্রিন
 // ==========================================
 class RoleSelectionScreen extends StatelessWidget {
   const RoleSelectionScreen({super.key});
@@ -127,7 +150,7 @@ class RoleSelectionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 223, 255, 235),
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -154,14 +177,14 @@ class RoleSelectionScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 const Text(
-                  "Welcome to Kinvera!\nChoose your role to continue",
+                  "welcome_message",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.black87,
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
                   ),
-                ),
+                ).tr(),
                 const SizedBox(height: 30),
 
                 // Care Ambassador Role
@@ -176,8 +199,8 @@ class RoleSelectionScreen extends StatelessWidget {
                     );
                   },
                   child: const RoleCard(
-                    title: "Care Ambassador",
-                    subtitle: "Select, if you want to provide care services",
+                    title: "care_ambassador_title",
+                    subtitle: "care_ambassador_subtitle",
                     icon: Icons.volunteer_activism,
                     avatarLeft: true,
                   ),
@@ -196,9 +219,8 @@ class RoleSelectionScreen extends StatelessWidget {
                     );
                   },
                   child: const RoleCard(
-                    title: "Family Member",
-                    subtitle:
-                        "Select, if you are looking for a caregiver for your parents",
+                    title: "family_member_title",
+                    subtitle: "family_member_subtitle",
                     icon: Icons.family_restroom,
                     avatarLeft: false,
                   ),
@@ -217,9 +239,8 @@ class RoleSelectionScreen extends StatelessWidget {
                     );
                   },
                   child: const RoleCard(
-                    title: "Elderly Member",
-                    subtitle:
-                        "Select, if you are receiving care and want easy access to help",
+                    title: "elderly_member_title",
+                    subtitle: "elderly_member_subtitle",
                     icon: Icons.elderly,
                     avatarLeft: true,
                   ),
@@ -258,7 +279,6 @@ class RoleCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(50),
       ),
       child: Row(
-        textDirection: avatarLeft ? TextDirection.ltr : TextDirection.rtl,
         children: [
           Container(
             width: 80,
@@ -292,7 +312,7 @@ class RoleCard extends StatelessWidget {
                     : CrossAxisAlignment.end,
                 children: [
                   Text(
-                    title,
+                    title.tr(),
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -301,7 +321,7 @@ class RoleCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    subtitle,
+                    subtitle.tr(),
                     textAlign: avatarLeft ? TextAlign.left : TextAlign.right,
                     style: const TextStyle(
                       fontSize: 12,
@@ -331,7 +351,7 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  final Color primaryGreen = const Color.fromARGB(255, 219, 255, 188);
+  final Color primaryGreen = const Color.fromARGB(255, 39, 255, 183);
   bool isPasswordHidden = true;
 
   @override
@@ -378,14 +398,14 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
               ),
               const Text(
-                "Sign In to continue",
+                "sign_in_continue",
                 style: TextStyle(color: Colors.grey, fontSize: 14),
-              ),
+              ).tr(),
               const SizedBox(height: 40),
 
               TextField(
                 decoration: InputDecoration(
-                  labelText: "Email Address",
+                  labelText: "email_address".tr(),
                   prefixIcon: const Icon(Icons.email_outlined),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -401,7 +421,7 @@ class _SignInScreenState extends State<SignInScreen> {
               TextField(
                 obscureText: isPasswordHidden,
                 decoration: InputDecoration(
-                  labelText: "Password",
+                  labelText: "password".tr(),
                   prefixIcon: const Icon(Icons.lock_outline),
                   suffixIcon: IconButton(
                     icon: Icon(
@@ -430,7 +450,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 child: TextButton(
                   onPressed: () {},
                   child: Text(
-                    "Forgot Password?",
+                    "forgot_password".tr(),
                     style: TextStyle(color: primaryGreen),
                   ),
                 ),
@@ -470,16 +490,15 @@ class _SignInScreenState extends State<SignInScreen> {
                         ),
                       );
                     }
-                    // লগইন লজিক
                   },
                   child: const Text(
-                    "Sign In",
+                    "sign_in_btn",
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
-                  ),
+                  ).tr(),
                 ),
               ),
               const SizedBox(height: 20),
@@ -487,7 +506,7 @@ class _SignInScreenState extends State<SignInScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Don't have an account?"),
+                  const Text("no_account").tr(),
                   TextButton(
                     onPressed: () {
                       if (widget.role == "Care Ambassador") {
@@ -517,7 +536,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       }
                     },
                     child: Text(
-                      "Sign Up",
+                      "sign_up_btn".tr(),
                       style: TextStyle(
                         color: primaryGreen,
                         fontWeight: FontWeight.bold,
