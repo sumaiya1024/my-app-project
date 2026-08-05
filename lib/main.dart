@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'lang.dart';
-// Ambassador Imports
+
+// Ambassador Imports (লক্ষ্য করুন এখানে যেন কোনো ফাইল দুইবার ইমপোর্ট না হয়)
 import 'ambassador/ambassador_registration.dart';
 import 'ambassador/ambassador_page.dart';
 import 'ambassador/ambassador_dashboard.dart';
@@ -11,6 +12,8 @@ import 'ambassador/payment_history_screen.dart';
 import 'ambassador/my_documents_screen.dart';
 import 'ambassador/my_reviews.dart';
 import 'ambassador/shift_scheduler_screen.dart';
+
+// Other Roles Imports
 import 'elderly member/elderly_member_registration.dart';
 import 'elderly member/elderly_page.dart';
 import 'family member/family_registration.dart';
@@ -342,7 +345,6 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  // Updated to Teal & Mint Green Palette
   final Color primaryTeal = const Color(0xFF0F766E);
   bool isPasswordHidden = true;
 

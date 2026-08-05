@@ -1,23 +1,28 @@
 import 'package:flutter/material.dart';
+import 'profile_screen.dart';
+import 'certificate_screen.dart';
+import 'payment_history_screen.dart';
+import 'my_documents_screen.dart';
+import 'shift_scheduler_screen.dart';
+import 'my_reviews.dart';
 
-class AmbasadorDashboard extends StatefulWidget {
-  const AmbasadorDashboard({super.key});
+class AmbassadorDashboard extends StatefulWidget {
+  const AmbassadorDashboard({super.key});
 
   @override
-  State<AmbasadorDashboard> createState() => _AmbasadorDashboardState();
+  State<AmbassadorDashboard> createState() => _AmbassadorDashboardState();
 }
 
-class _AmbasadorDashboardState extends State<AmbasadorDashboard> {
-  bool isOnDuty = true; // Duty Status Toggle State
+class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
+  bool isOnDuty = true;
 
-  // Teal & Mint Green Theme Colors
   final Color primaryTeal = const Color(0xFF0F766E);
   final Color mintAccent = const Color(0xFF14B8A6);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F7FA), // Soft Modern Background
+      backgroundColor: const Color(0xFFF4F7FA),
       appBar: AppBar(
         title: const Text("Ambassador Dashboard"),
         flexibleSpace: Container(
@@ -31,7 +36,6 @@ class _AmbasadorDashboardState extends State<AmbasadorDashboard> {
         ),
         foregroundColor: Colors.white,
         actions: [
-          // Notification Icon with Badge
           IconButton(
             icon: const Stack(
               children: [
@@ -47,33 +51,22 @@ class _AmbasadorDashboardState extends State<AmbasadorDashboard> {
           ),
         ],
       ),
-      drawer: _buildAppDrawer(),
+      drawer: _buildAppDrawer(context),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ১. Duty Status Banner
             _buildDutyStatusCard(),
             const SizedBox(height: 16),
-
-            // ২. Earnings & Wallet Card
             _buildEarningsCard(),
             const SizedBox(height: 16),
-
-            // ৩. Stats Overview (Gradient Box)
             _buildStatsBar(),
             const SizedBox(height: 16),
-
-            // ৪. Today's Shift Reminder
-            _buildShiftReminderCard(),
+            _buildShiftReminderCard(context),
             const SizedBox(height: 16),
-
-            // ৫. Share Feedback Card
             _buildFeedbackCard(),
             const SizedBox(height: 16),
-
-            // ৬. Quick Actions Grid
             const Text(
               "Quick Actions",
               style: TextStyle(
@@ -83,18 +76,12 @@ class _AmbasadorDashboardState extends State<AmbasadorDashboard> {
               ),
             ),
             const SizedBox(height: 10),
-            _buildQuickInfoGrid(),
+            _buildQuickInfoGrid(context),
             const SizedBox(height: 16),
-
-            // ৭. Notice Board
             _buildNoticeBoard(),
             const SizedBox(height: 16),
-
-            // ৮. Recognition Card
             _buildRecognitionCard(),
             const SizedBox(height: 24),
-
-            // ৯. Helpline Number Section
             _buildHelplineSection(),
             const SizedBox(height: 16),
           ],
@@ -103,8 +90,7 @@ class _AmbasadorDashboardState extends State<AmbasadorDashboard> {
     );
   }
 
-  // --- Drawer Widget ---
-  Widget _buildAppDrawer() {
+  Widget _buildAppDrawer(BuildContext context) {
     return Drawer(
       child: ListView(
         children: [
@@ -122,32 +108,78 @@ class _AmbasadorDashboardState extends State<AmbasadorDashboard> {
           ListTile(
             leading: const Icon(Icons.person),
             title: const Text("Profile"),
-            onTap: () {},
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ProfileScreen()),
+              );
+            },
           ),
           ListTile(
             leading: const Icon(Icons.workspace_premium),
             title: const Text("Certificate"),
-            onTap: () {},
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const CertificateScreen(),
+                ),
+              );
+            },
           ),
           ListTile(
             leading: const Icon(Icons.payment),
             title: const Text("Payment History"),
-            onTap: () {},
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const PaymentHistoryScreen(),
+                ),
+              );
+            },
           ),
           ListTile(
             leading: const Icon(Icons.description),
             title: const Text("My Documents"),
-            onTap: () {},
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const MyDocumentsScreen(),
+                ),
+              );
+            },
           ),
           ListTile(
             leading: const Icon(Icons.star_rate),
             title: const Text("My Reviews & Ratings"),
-            onTap: () {},
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const MyReviewsScreen(),
+                ),
+              );
+            },
           ),
           ListTile(
             leading: const Icon(Icons.calendar_month),
             title: const Text("Shift Scheduler"),
-            onTap: () {},
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ShiftSchedulerScreen(),
+                ),
+              );
+            },
           ),
           const Divider(),
           ListTile(
@@ -176,7 +208,6 @@ class _AmbasadorDashboardState extends State<AmbasadorDashboard> {
     );
   }
 
-  // --- Duty Status Toggle Card ---
   Widget _buildDutyStatusCard() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -227,7 +258,6 @@ class _AmbasadorDashboardState extends State<AmbasadorDashboard> {
     );
   }
 
-  // --- Earnings Summary Card ---
   Widget _buildEarningsCard() {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -272,7 +302,6 @@ class _AmbasadorDashboardState extends State<AmbasadorDashboard> {
     );
   }
 
-  // --- Stats Bar ---
   Widget _buildStatsBar() {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 10),
@@ -315,8 +344,7 @@ class _AmbasadorDashboardState extends State<AmbasadorDashboard> {
     ],
   );
 
-  // --- Shift Reminder Card ---
-  Widget _buildShiftReminderCard() {
+  Widget _buildShiftReminderCard(BuildContext context) {
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -331,34 +359,39 @@ class _AmbasadorDashboardState extends State<AmbasadorDashboard> {
         ),
         subtitle: const Text("Tomorrow, 09:00 AM - Gulshan, Dhaka"),
         trailing: const Icon(Icons.chevron_right),
-        onTap: () {},
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const ShiftSchedulerScreen(),
+            ),
+          );
+        },
       ),
     );
   }
 
-  // --- Share Feedback Card ---
   Widget _buildFeedbackCard() {
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: const ListTile(
-        leading: CircleAvatar(
+      child: ListTile(
+        leading: const CircleAvatar(
           backgroundColor: Color(0xFFE8F5E9),
           child: Icon(Icons.note_alt, color: Colors.green),
         ),
-        title: Text(
+        title: const Text(
           "Share Feedback",
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
         ),
-        subtitle: Text("Please let us know your care update."),
-        trailing: Icon(Icons.chevron_right),
+        subtitle: const Text("Please let us know your care update."),
+        trailing: const Icon(Icons.chevron_right),
         onTap: () {},
       ),
     );
   }
 
-  // --- Quick Info Grid ---
-  Widget _buildQuickInfoGrid() {
+  Widget _buildQuickInfoGrid(BuildContext context) {
     return GridView.count(
       crossAxisCount: 2,
       shrinkWrap: true,
@@ -367,59 +400,91 @@ class _AmbasadorDashboardState extends State<AmbasadorDashboard> {
       mainAxisSpacing: 10,
       childAspectRatio: 2.2,
       children: [
-        _infoBox("100% Verified", Icons.verified, Colors.green),
+        _infoBox(
+          "100% Verified",
+          Icons.verified,
+          Colors.green,
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const MyDocumentsScreen(),
+              ),
+            );
+          },
+        ),
         _infoBox("Nearby Jobs", Icons.work, primaryTeal, count: "99+"),
         _infoBox("Confirmation Letter", Icons.email, Colors.orange, count: "5"),
-        _infoBox("Invoices", Icons.receipt_long, Colors.purple, count: "1"),
+        _infoBox(
+          "Invoices",
+          Icons.receipt_long,
+          Colors.purple,
+          count: "1",
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const PaymentHistoryScreen(),
+              ),
+            );
+          },
+        ),
       ],
     );
   }
 
-  Widget _infoBox(String title, IconData icon, Color color, {String? count}) =>
-      Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.shade200,
-              blurRadius: 4,
-              spreadRadius: 1,
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Icon(icon, color: color, size: 28),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (count != null)
-                    Text(
-                      count,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                      ),
-                    ),
+  Widget _infoBox(
+    String title,
+    IconData icon,
+    Color color, {
+    String? count,
+    VoidCallback? onTap,
+  }) => InkWell(
+    onTap: onTap,
+    child: Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.shade200,
+            blurRadius: 4,
+            spreadRadius: 1,
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: color, size: 28),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (count != null)
                   Text(
-                    title,
-                    style: const TextStyle(fontSize: 11, color: Colors.black87),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                    count,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
                   ),
-                ],
-              ),
+                Text(
+                  title,
+                  style: const TextStyle(fontSize: 11, color: Colors.black87),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
             ),
-          ],
-        ),
-      );
+          ),
+        ],
+      ),
+    ),
+  );
 
-  // --- Notice Board ---
   Widget _buildNoticeBoard() {
     return Card(
       elevation: 2,
@@ -450,7 +515,6 @@ class _AmbasadorDashboardState extends State<AmbasadorDashboard> {
     );
   }
 
-  // --- Recognition Card ---
   Widget _buildRecognitionCard() {
     return Card(
       elevation: 2,
@@ -469,7 +533,6 @@ class _AmbasadorDashboardState extends State<AmbasadorDashboard> {
     );
   }
 
-  // --- Helpline Number Section (Bottom) ---
   Widget _buildHelplineSection() {
     return Container(
       padding: const EdgeInsets.all(12),

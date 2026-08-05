@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'easy_localization/easy_localization.dart'; // অথবা আপনার প্রজেক্ট অনুযায়ী ইমপোর্ট পাথ চেক করে নেবেন
+import 'package:easy_localization/easy_localization.dart';
+import 'main.dart'; // RoleSelectionScreen এর জন্য এটি জরুরি
 
 class LanguageSelectionScreen extends StatelessWidget {
   const LanguageSelectionScreen({super.key});

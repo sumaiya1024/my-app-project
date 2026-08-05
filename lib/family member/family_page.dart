@@ -14,7 +14,6 @@ class FamilyPage extends StatelessWidget {
   Widget build(BuildContext context) {
     // Teal & Mint Green Theme Colors
     const Color primaryTeal = Color(0xFF0F766E);
-    const Color mintAccent = Color(0xFF14B8A6);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF4F7FA), // Soft Modern Background

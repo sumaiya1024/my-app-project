@@ -400,17 +400,17 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: const ListTile(
-        leading: CircleAvatar(
+      child: ListTile(
+        leading: const CircleAvatar(
           backgroundColor: Color(0xFFE8F5E9),
           child: Icon(Icons.note_alt, color: Colors.green),
         ),
-        title: Text(
+        title: const Text(
           "Share Feedback",
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
         ),
-        subtitle: Text("Please let us know your care update."),
-        trailing: Icon(Icons.chevron_right),
+        subtitle: const Text("Please let us know your care update."),
+        trailing: const Icon(Icons.chevron_right),
         onTap: () {},
       ),
     );
