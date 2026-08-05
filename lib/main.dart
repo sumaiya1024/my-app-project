@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'lang.dart';
+// Ambassador Imports
 import 'ambassador/ambassador_registration.dart';
 import 'ambassador/ambassador_page.dart';
+import 'ambassador/ambassador_dashboard.dart';
+import 'ambassador/profile_screen.dart';
+import 'ambassador/certificate_screen.dart';
+import 'ambassador/payment_history_screen.dart';
+import 'ambassador/my_documents_screen.dart';
+import 'ambassador/my_reviews.dart';
+import 'ambassador/shift_scheduler_screen.dart';
 import 'elderly member/elderly_member_registration.dart';
 import 'elderly member/elderly_page.dart';
 import 'family member/family_registration.dart';
@@ -29,23 +37,16 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-
-      // ==========================================
-      // এই হলো সেই 'স্টেপ ৩' (Step 3) এর কোডগুলো,
-      // যা আপনার MaterialApp-এর ভেতরে বসাতে হবে:
-      // ==========================================
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
-
-      home: const LanguageSelectionScreen(), // আপনার প্রথম স্ক্রিন
+      home: const LanguageSelectionScreen(),
     );
   }
 }
 
 // ==========================================
 // ১. স্প্ল্যাশ স্ক্রিন
-// ==========================================
 // ==========================================
 class Splashscreen extends StatefulWidget {
   const Splashscreen({super.key});
@@ -73,7 +74,7 @@ class _SplashscreenState extends State<Splashscreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+      backgroundColor: const Color(0xFFF4F7FA),
       body: Stack(
         children: [
           Center(
@@ -82,17 +83,7 @@ class _SplashscreenState extends State<Splashscreen> {
               height: 600,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withValues(alpha: 0.6),
-              ),
-            ),
-          ),
-          Center(
-            child: Container(
-              width: 250,
-              height: 250,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white.withValues(alpha: 0.6),
+                color: const Color(0xFF14B8A6).withValues(alpha: 0.1),
               ),
             ),
           ),
@@ -105,8 +96,8 @@ class _SplashscreenState extends State<Splashscreen> {
                   'Kinvera',
                   style: TextStyle(
                     fontSize: 34,
-                    fontWeight: FontWeight.w400,
-                    color: Color.fromARGB(255, 32, 2, 2),
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF0F766E),
                     letterSpacing: 0.5,
                   ),
                 ),
@@ -115,7 +106,7 @@ class _SplashscreenState extends State<Splashscreen> {
                   'Connect, Care, Comfort',
                   style: TextStyle(
                     fontSize: 14,
-                    color: Color.fromARGB(255, 0, 0, 0),
+                    color: Colors.black54,
                     fontWeight: FontWeight.w300,
                   ),
                 ),
@@ -129,7 +120,7 @@ class _SplashscreenState extends State<Splashscreen> {
               child: Text(
                 'v2.6.2.256',
                 style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.6),
+                  color: Colors.grey.withValues(alpha: 0.6),
                   fontSize: 14,
                 ),
               ),
@@ -150,14 +141,14 @@ class RoleSelectionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+      backgroundColor: const Color(0xFFF4F7FA),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
             decoration: BoxDecoration(
-              color: const Color.fromARGB(151, 233, 231, 231),
+              color: Colors.white,
               borderRadius: BorderRadius.circular(24),
               boxShadow: [
                 BoxShadow(
@@ -172,7 +163,7 @@ class RoleSelectionScreen extends StatelessWidget {
               children: [
                 const Icon(
                   Icons.co_present_outlined,
-                  color: Colors.black87,
+                  color: Color(0xFF0F766E),
                   size: 50,
                 ),
                 const SizedBox(height: 16),
@@ -275,7 +266,7 @@ class RoleCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey.withValues(alpha: 0.1),
+        color: const Color(0xFF14B8A6).withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(50),
       ),
       child: Row(
@@ -284,7 +275,7 @@ class RoleCard extends StatelessWidget {
             width: 80,
             height: 80,
             decoration: BoxDecoration(
-              color: Colors.blue.shade50,
+              color: const Color(0xFF0F766E).withValues(alpha: 0.1),
               shape: BoxShape.circle,
               border: Border.all(color: Colors.white, width: 3),
               boxShadow: [
@@ -295,7 +286,7 @@ class RoleCard extends StatelessWidget {
                 ),
               ],
             ),
-            child: Icon(icon, size: 40, color: Colors.blue.shade900),
+            child: Icon(icon, size: 40, color: const Color(0xFF0F766E)),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -351,7 +342,8 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  final Color primaryGreen = const Color.fromARGB(255, 39, 255, 183);
+  // Updated to Teal & Mint Green Palette
+  final Color primaryTeal = const Color(0xFF0F766E);
   bool isPasswordHidden = true;
 
   @override
@@ -375,7 +367,7 @@ class _SignInScreenState extends State<SignInScreen> {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: primaryGreen.withValues(alpha: 0.1),
+                  color: primaryTeal.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -385,7 +377,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       ? Icons.family_restroom
                       : Icons.elderly,
                   size: 60,
-                  color: primaryGreen,
+                  color: primaryTeal,
                 ),
               ),
               const SizedBox(height: 20),
@@ -412,7 +404,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: primaryGreen, width: 2),
+                    borderSide: BorderSide(color: primaryTeal, width: 2),
                   ),
                 ),
               ),
@@ -440,7 +432,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: primaryGreen, width: 2),
+                    borderSide: BorderSide(color: primaryTeal, width: 2),
                   ),
                 ),
               ),
@@ -451,7 +443,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   onPressed: () {},
                   child: Text(
                     "forgot_password".tr(),
-                    style: TextStyle(color: primaryGreen),
+                    style: TextStyle(color: primaryTeal),
                   ),
                 ),
               ),
@@ -462,7 +454,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 height: 50,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryGreen,
+                    backgroundColor: primaryTeal,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -472,7 +464,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const AmbasadorDashboard(),
+                          builder: (context) => const AmbassadorDashboard(),
                         ),
                       );
                     } else if (widget.role == "Family Member") {
@@ -538,7 +530,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     child: Text(
                       "sign_up_btn".tr(),
                       style: TextStyle(
-                        color: primaryGreen,
+                        color: primaryTeal,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

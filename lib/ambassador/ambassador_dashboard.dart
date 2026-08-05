@@ -4,7 +4,7 @@ import 'certificate_screen.dart';
 import 'payment_history_screen.dart';
 import 'my_documents_screen.dart';
 import 'shift_scheduler_screen.dart';
-import 'my_reviews.dart';
+import 'my_reviews.dart'; // নতুন রিভিউ স্ক্রিন ইমপোর্ট করা হলো
 
 class AmbassadorDashboard extends StatefulWidget {
   const AmbassadorDashboard({super.key});
@@ -23,7 +23,7 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F7FA), // Soft Modern Background
+      backgroundColor: const Color(0xFFF4F7FA),
       appBar: AppBar(
         title: const Text("Ambassador Dashboard"),
         flexibleSpace: Container(
@@ -37,7 +37,6 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
         ),
         foregroundColor: Colors.white,
         actions: [
-          // Notification Icon with Badge
           IconButton(
             icon: const Stack(
               children: [
@@ -59,27 +58,16 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ১. Duty Status Banner
             _buildDutyStatusCard(),
             const SizedBox(height: 16),
-
-            // ২. Earnings & Wallet Card
             _buildEarningsCard(),
             const SizedBox(height: 16),
-
-            // ৩. Stats Overview (Gradient Box)
             _buildStatsBar(),
             const SizedBox(height: 16),
-
-            // ৪. Today's Shift Reminder
             _buildShiftReminderCard(context),
             const SizedBox(height: 16),
-
-            // ৫. Share Feedback Card
             _buildFeedbackCard(),
             const SizedBox(height: 16),
-
-            // ৬. Quick Actions Grid
             const Text(
               "Quick Actions",
               style: TextStyle(
@@ -91,16 +79,10 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
             const SizedBox(height: 10),
             _buildQuickInfoGrid(context),
             const SizedBox(height: 16),
-
-            // ৭. Notice Board
             _buildNoticeBoard(),
             const SizedBox(height: 16),
-
-            // ৮. Recognition Card
             _buildRecognitionCard(),
             const SizedBox(height: 24),
-
-            // ৯. Helpline Number Section
             _buildHelplineSection(),
             const SizedBox(height: 16),
           ],
@@ -228,7 +210,6 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
     );
   }
 
-  // --- Duty Status Toggle Card ---
   Widget _buildDutyStatusCard() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -279,7 +260,6 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
     );
   }
 
-  // --- Earnings Summary Card ---
   Widget _buildEarningsCard() {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -324,7 +304,6 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
     );
   }
 
-  // --- Stats Bar ---
   Widget _buildStatsBar() {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 10),
@@ -367,7 +346,6 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
     ],
   );
 
-  // --- Shift Reminder Card ---
   Widget _buildShiftReminderCard(BuildContext context) {
     return Card(
       elevation: 2,
@@ -395,7 +373,6 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
     );
   }
 
-  // --- Share Feedback Card ---
   Widget _buildFeedbackCard() {
     return Card(
       elevation: 2,
@@ -416,7 +393,6 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
     );
   }
 
-  // --- Quick Info Grid ---
   Widget _buildQuickInfoGrid(BuildContext context) {
     return GridView.count(
       crossAxisCount: 2,
@@ -511,7 +487,6 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
     ),
   );
 
-  // --- Notice Board ---
   Widget _buildNoticeBoard() {
     return Card(
       elevation: 2,
@@ -542,7 +517,6 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
     );
   }
 
-  // --- Recognition Card ---
   Widget _buildRecognitionCard() {
     return Card(
       elevation: 2,
@@ -561,7 +535,6 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
     );
   }
 
-  // --- Helpline Number Section (Bottom) ---
   Widget _buildHelplineSection() {
     return Container(
       padding: const EdgeInsets.all(12),

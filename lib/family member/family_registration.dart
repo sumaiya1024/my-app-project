@@ -7,7 +7,8 @@ class FamilyRegistrationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color primaryGreen = const Color.fromARGB(255, 39, 255, 183);
+    // Teal & Mint Green Theme Colors
+    const Color primaryTeal = Color(0xFF0F766E);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -20,7 +21,11 @@ class FamilyRegistrationScreen extends StatelessWidget {
         ),
         title: const Text(
           "Family Registration",
-          style: TextStyle(color: Colors.black87, fontSize: 18),
+          style: TextStyle(
+            color: Colors.black87,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         centerTitle: true,
       ),
@@ -28,30 +33,30 @@ class FamilyRegistrationScreen extends StatelessWidget {
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
-            _buildTextField("Full Name *", primaryGreen),
+            _buildTextField("Full Name *", primaryTeal),
             const SizedBox(height: 15),
-            _buildTextField("Phone Number *", primaryGreen),
+            _buildTextField("Phone Number *", primaryTeal),
             const SizedBox(height: 15),
-            _buildTextField("Email Address *", primaryGreen),
+            _buildTextField("Email Address *", primaryTeal),
             const SizedBox(height: 15),
 
             DropdownButtonFormField<String>(
               decoration: InputDecoration(
                 labelText: "Relation to Elderly *",
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: primaryGreen, width: 2),
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: primaryTeal, width: 2),
                 ),
               ),
               items:
                   [
                     "Parent",
                     "Son",
-                    "Daughter"
-                        "Grandparent",
+                    "Daughter",
+                    "Grandparent",
                     "Spouse",
                     "Other",
                   ].map((String value) {
@@ -64,7 +69,7 @@ class FamilyRegistrationScreen extends StatelessWidget {
             ),
 
             const SizedBox(height: 15),
-            _buildTextField("Password *", primaryGreen, isPassword: true),
+            _buildTextField("Password *", primaryTeal, isPassword: true),
             const SizedBox(height: 30),
 
             SizedBox(
@@ -72,10 +77,12 @@ class FamilyRegistrationScreen extends StatelessWidget {
               height: 50,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: primaryGreen,
+                  backgroundColor: primaryTeal,
+                  foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(12),
                   ),
+                  elevation: 2,
                 ),
                 onPressed: () {
                   Navigator.push(
@@ -85,11 +92,7 @@ class FamilyRegistrationScreen extends StatelessWidget {
                 },
                 child: const Text(
                   "Sign Up",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
             ),
@@ -108,9 +111,9 @@ class FamilyRegistrationScreen extends StatelessWidget {
       obscureText: isPassword,
       decoration: InputDecoration(
         labelText: label,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: borderColor, width: 2),
         ),
       ),

@@ -6,7 +6,8 @@ class ElderlyRegistrationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color primaryGreen = const Color.fromARGB(255, 39, 255, 183);
+    // Teal & Mint Green Theme Colors
+    const Color primaryTeal = Color(0xFF0F766E);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -19,7 +20,11 @@ class ElderlyRegistrationScreen extends StatelessWidget {
         ),
         title: const Text(
           "Elderly Registration",
-          style: TextStyle(color: Colors.black87, fontSize: 18),
+          style: TextStyle(
+            color: Colors.black87,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         centerTitle: true,
       ),
@@ -27,18 +32,18 @@ class ElderlyRegistrationScreen extends StatelessWidget {
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
-            _buildTextField("Full Name *", primaryGreen),
+            _buildTextField("Full Name *", primaryTeal),
             const SizedBox(height: 15),
-            _buildTextField("Age *", primaryGreen),
+            _buildTextField("Age *", primaryTeal),
             const SizedBox(height: 15),
-            _buildTextField("Emergency Contact Number *", primaryGreen),
+            _buildTextField("Emergency Contact Number *", primaryTeal),
             const SizedBox(height: 15),
             _buildTextField(
               "Primary Health Conditions (e.g. Diabetes, BP)",
-              primaryGreen,
+              primaryTeal,
             ),
             const SizedBox(height: 15),
-            _buildTextField("Password *", primaryGreen, isPassword: true),
+            _buildTextField("Password *", primaryTeal, isPassword: true),
             const SizedBox(height: 30),
 
             SizedBox(
@@ -46,12 +51,13 @@ class ElderlyRegistrationScreen extends StatelessWidget {
               height: 50,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: primaryGreen,
+                  backgroundColor: primaryTeal,
+                  foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(12),
                   ),
+                  elevation: 2,
                 ),
-                // এই onPressed এর ভেতর কোডটি বসবে
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -62,11 +68,7 @@ class ElderlyRegistrationScreen extends StatelessWidget {
                 },
                 child: const Text(
                   "Sign Up",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
             ),
@@ -85,9 +87,9 @@ class ElderlyRegistrationScreen extends StatelessWidget {
       obscureText: isPassword,
       decoration: InputDecoration(
         labelText: label,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: borderColor, width: 2),
         ),
       ),

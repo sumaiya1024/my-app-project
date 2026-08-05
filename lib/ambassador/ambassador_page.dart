@@ -1,204 +1,301 @@
 import 'package:flutter/material.dart';
 
-class AmbasadorDashboard extends StatelessWidget {
+class AmbasadorDashboard extends StatefulWidget {
   const AmbasadorDashboard({super.key});
+
+  @override
+  State<AmbasadorDashboard> createState() => _AmbasadorDashboardState();
+}
+
+class _AmbasadorDashboardState extends State<AmbasadorDashboard> {
+  bool isOnDuty = true; // Duty Status Toggle State
+
+  // Teal & Mint Green Theme Colors
+  final Color primaryTeal = const Color(0xFF0F766E);
+  final Color mintAccent = const Color(0xFF14B8A6);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
+      backgroundColor: const Color(0xFFF4F7FA), // Soft Modern Background
       appBar: AppBar(
-        title: const Text("Dashboard"),
-        backgroundColor: Colors.blue.shade800,
-        foregroundColor: Colors.white,
-      ),
-      drawer: Drawer(
-        child: ListView(
-          children: [
-            const UserAccountsDrawerHeader(
-              accountName: Text("Jennie Akter"),
-              accountEmail: Text("jennieakter@gmail.com"),
-              currentAccountPicture: CircleAvatar(child: Icon(Icons.person)),
+        title: const Text("Ambassador Dashboard"),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [primaryTeal, mintAccent],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-
-            // ২. ব্যক্তিগত ও কাজের তথ্য
-            ListTile(
-              leading: const Icon(Icons.person),
-              title: const Text("Profile"),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: const Icon(Icons.workspace_premium),
-              title: const Text("Certificate"),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: const Icon(Icons.payment),
-              title: const Text("Payment History"),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: const Icon(Icons.description),
-              title: const Text("My Documents"),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: const Icon(Icons.star_rate),
-              title: const Text("My Reviews & Ratings"),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: const Icon(Icons.calendar_month),
-              title: const Text("Shift Scheduler"),
-              onTap: () {},
-            ),
-
-            const Divider(),
-
-            // ৩. অ্যাপ সেটিংস ও কাস্টমার সাপোর্ট
-            ListTile(
-              leading: const Icon(Icons.message),
-              title: const Text("Message to CEO"),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: const Icon(Icons.support_agent),
-              title: const Text("Help & Support"),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: const Icon(Icons.settings),
-              title: const Text("Settings"),
-              onTap: () {},
-            ),
-
-            const Divider(),
-
-            // ৪. কমিউনিটি ও শেয়ারিং
-            ListTile(
-              leading: const Icon(Icons.card_giftcard),
-              title: const Text("Refer and Earn"),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: const Icon(Icons.help_outline),
-              title: const Text("How it Works"),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: const Icon(Icons.people),
-              title: const Text("Join Community"),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: const Icon(Icons.note),
-              title: const Text("Important Notes"),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: const Icon(Icons.share),
-              title: const Text("Share this App"),
-              onTap: () {},
-            ),
-
-            const Divider(),
-
-            // ৫. লগআউট
-            ListTile(
-              leading: const Icon(Icons.logout, color: Colors.red),
-              title: const Text("Logout", style: TextStyle(color: Colors.red)),
-              onTap: () {},
-            ),
-          ],
+          ),
         ),
-      ),
-      // ২. বডি কন্টেন্ট
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            // স্ট্যাটাস বার
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-              decoration: BoxDecoration(
-                color: Colors.blue.shade800,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  _statItem("Applied", "1026"),
-                  _statItem("Shortlisted", "0"),
-                  _statItem("Appointed", "1"),
-                  _statItem("Confirmed", "14"),
-                  _statItem("Cancelled", "31"),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // ২. Share Feedback / Health Report
-            Card(
-              child: ListTile(
-                leading: const Icon(Icons.note_alt, color: Colors.blue),
-                title: const Text("Share Feedback"),
-                subtitle: const Text("Please let us know your care update."),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () {},
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // ৩. Notice Board
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text(
-                      "Notice Board",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 8),
-                    Text("Our Care Ambassador of the Month, May 2026 is..."),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // ৪. Recognition
-            Card(
-              child: ListTile(
-                leading: const CircleAvatar(child: Icon(Icons.star)),
-                title: const Text("Care Ambassador of the Month"),
-                subtitle: const Text("ID: 418613 | 5.0 Rating"),
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // ৫. ভেরিফিকেশন ও জবস
-            Row(
+        foregroundColor: Colors.white,
+        actions: [
+          // Notification Icon with Badge
+          IconButton(
+            icon: const Stack(
               children: [
-                Expanded(child: _infoBox("100% Verified", Icons.verified)),
-                Expanded(
-                  child: _infoBox("Nearby Jobs", Icons.work, count: "99+"),
-                ),
-                Expanded(
-                  child: _infoBox(
-                    "Confirmation Letter",
-                    Icons.email,
-                    count: "5",
-                  ),
-                ),
-                Expanded(
-                  child: _infoBox("Invoices", Icons.receipt_long, count: "1"),
+                Icon(Icons.notifications_outlined),
+                Positioned(
+                  right: 0,
+                  top: 0,
+                  child: CircleAvatar(radius: 4, backgroundColor: Colors.red),
                 ),
               ],
             ),
+            onPressed: () {},
+          ),
+        ],
+      ),
+      drawer: _buildAppDrawer(),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ১. Duty Status Banner
+            _buildDutyStatusCard(),
+            const SizedBox(height: 16),
+
+            // ২. Earnings & Wallet Card
+            _buildEarningsCard(),
+            const SizedBox(height: 16),
+
+            // ৩. Stats Overview (Gradient Box)
+            _buildStatsBar(),
+            const SizedBox(height: 16),
+
+            // ৪. Today's Shift Reminder
+            _buildShiftReminderCard(),
+            const SizedBox(height: 16),
+
+            // ৫. Share Feedback Card
+            _buildFeedbackCard(),
+            const SizedBox(height: 16),
+
+            // ৬. Quick Actions Grid
+            const Text(
+              "Quick Actions",
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            ),
+            const SizedBox(height: 10),
+            _buildQuickInfoGrid(),
+            const SizedBox(height: 16),
+
+            // ৭. Notice Board
+            _buildNoticeBoard(),
+            const SizedBox(height: 16),
+
+            // ৮. Recognition Card
+            _buildRecognitionCard(),
+            const SizedBox(height: 24),
+
+            // ৯. Helpline Number Section
+            _buildHelplineSection(),
+            const SizedBox(height: 16),
           ],
         ),
+      ),
+    );
+  }
+
+  // --- Drawer Widget ---
+  Widget _buildAppDrawer() {
+    return Drawer(
+      child: ListView(
+        children: [
+          UserAccountsDrawerHeader(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(colors: [primaryTeal, mintAccent]),
+            ),
+            accountName: const Text("Jennie Akter"),
+            accountEmail: const Text("jennieakter@gmail.com"),
+            currentAccountPicture: CircleAvatar(
+              backgroundColor: Colors.white,
+              child: Icon(Icons.person, size: 40, color: primaryTeal),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.person),
+            title: const Text("Profile"),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: const Icon(Icons.workspace_premium),
+            title: const Text("Certificate"),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: const Icon(Icons.payment),
+            title: const Text("Payment History"),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: const Icon(Icons.description),
+            title: const Text("My Documents"),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: const Icon(Icons.star_rate),
+            title: const Text("My Reviews & Ratings"),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: const Icon(Icons.calendar_month),
+            title: const Text("Shift Scheduler"),
+            onTap: () {},
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.message),
+            title: const Text("Message to CEO"),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: const Icon(Icons.support_agent),
+            title: const Text("Help & Support"),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: const Icon(Icons.settings),
+            title: const Text("Settings"),
+            onTap: () {},
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.logout, color: Colors.red),
+            title: const Text("Logout", style: TextStyle(color: Colors.red)),
+            onTap: () {},
+          ),
+        ],
+      ),
+    );
+  }
+
+  // --- Duty Status Toggle Card ---
+  Widget _buildDutyStatusCard() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.shade200,
+            blurRadius: 6,
+            spreadRadius: 2,
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.fiber_manual_record,
+                color: isOnDuty ? Colors.green : Colors.grey,
+                size: 16,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                isOnDuty
+                    ? "You are Online (Ready for Duty)"
+                    : "You are Offline",
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
+                ),
+              ),
+            ],
+          ),
+          Switch(
+            value: isOnDuty,
+            activeThumbColor: Colors.green,
+            onChanged: (value) {
+              setState(() {
+                isOnDuty = value;
+              });
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  // --- Earnings Summary Card ---
+  Widget _buildEarningsCard() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(colors: [primaryTeal, mintAccent]),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Total Earnings (This Month)",
+                style: TextStyle(color: Colors.white70, fontSize: 12),
+              ),
+              SizedBox(height: 4),
+              Text(
+                "৳ 15,400",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: primaryTeal,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            onPressed: () {},
+            child: const Text("Withdraw"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // --- Stats Bar ---
+  Widget _buildStatsBar() {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 10),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(colors: [primaryTeal, mintAccent]),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: mintAccent.withValues(alpha: 0.3),
+            blurRadius: 6,
+            spreadRadius: 2,
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _statItem("Applied", "1026"),
+          _statItem("Shortlisted", "0"),
+          _statItem("Appointed", "1"),
+          _statItem("Confirmed", "14"),
+          _statItem("Cancelled", "31"),
+        ],
       ),
     );
   }
@@ -213,21 +310,198 @@ class AmbasadorDashboard extends StatelessWidget {
           fontSize: 14,
         ),
       ),
-      Text(label, style: const TextStyle(color: Colors.white, fontSize: 9)),
+      const SizedBox(height: 2),
+      Text(label, style: const TextStyle(color: Colors.white70, fontSize: 9)),
     ],
   );
 
-  Widget _infoBox(String title, IconData icon, {String? count}) => Card(
-    child: Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
+  // --- Shift Reminder Card ---
+  Widget _buildShiftReminderCard() {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundColor: mintAccent.withValues(alpha: 0.15),
+          child: Icon(Icons.access_time, color: primaryTeal),
+        ),
+        title: const Text(
+          "Next Shift Scheduled",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+        ),
+        subtitle: const Text("Tomorrow, 09:00 AM - Gulshan, Dhaka"),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () {},
+      ),
+    );
+  }
+
+  // --- Share Feedback Card ---
+  Widget _buildFeedbackCard() {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: const ListTile(
+        leading: CircleAvatar(
+          backgroundColor: Color(0xFFE8F5E9),
+          child: Icon(Icons.note_alt, color: Colors.green),
+        ),
+        title: Text(
+          "Share Feedback",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+        ),
+        subtitle: Text("Please let us know your care update."),
+        trailing: Icon(Icons.chevron_right),
+        onTap: () {},
+      ),
+    );
+  }
+
+  // --- Quick Info Grid ---
+  Widget _buildQuickInfoGrid() {
+    return GridView.count(
+      crossAxisCount: 2,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      crossAxisSpacing: 10,
+      mainAxisSpacing: 10,
+      childAspectRatio: 2.2,
+      children: [
+        _infoBox("100% Verified", Icons.verified, Colors.green),
+        _infoBox("Nearby Jobs", Icons.work, primaryTeal, count: "99+"),
+        _infoBox("Confirmation Letter", Icons.email, Colors.orange, count: "5"),
+        _infoBox("Invoices", Icons.receipt_long, Colors.purple, count: "1"),
+      ],
+    );
+  }
+
+  Widget _infoBox(String title, IconData icon, Color color, {String? count}) =>
+      Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.shade200,
+              blurRadius: 4,
+              spreadRadius: 1,
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: color, size: 28),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (count != null)
+                    Text(
+                      count,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                  Text(
+                    title,
+                    style: const TextStyle(fontSize: 11, color: Colors.black87),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+
+  // --- Notice Board ---
+  Widget _buildNoticeBoard() {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: const Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.campaign, color: Colors.amber, size: 20),
+                SizedBox(width: 8),
+                Text(
+                  "Notice Board",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                ),
+              ],
+            ),
+            SizedBox(height: 8),
+            Text(
+              "Our Care Ambassador of the Month, May 2026 is announced! Check details inside.",
+              style: TextStyle(fontSize: 13, color: Colors.black54),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // --- Recognition Card ---
+  Widget _buildRecognitionCard() {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: const ListTile(
+        leading: CircleAvatar(
+          backgroundColor: Colors.amber,
+          child: Icon(Icons.star, color: Colors.white),
+        ),
+        title: Text(
+          "Care Ambassador of the Month",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+        ),
+        subtitle: Text("ID: 418613 | 5.0 Rating ⭐"),
+      ),
+    );
+  }
+
+  // --- Helpline Number Section (Bottom) ---
+  Widget _buildHelplineSection() {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: mintAccent.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: mintAccent.withValues(alpha: 0.3)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, color: Colors.blue),
-          if (count != null)
-            Text(count, style: const TextStyle(fontWeight: FontWeight.bold)),
-          Text(title, style: const TextStyle(fontSize: 12)),
+          Icon(Icons.headset_mic, color: primaryTeal),
+          const SizedBox(width: 10),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Need Help? Call Helpline",
+                style: TextStyle(fontSize: 11, color: Colors.black54),
+              ),
+              Text(
+                "+880 9612-345678",
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: primaryTeal,
+                ),
+              ),
+            ],
+          ),
         ],
       ),
-    ),
-  );
+    );
+  }
 }
