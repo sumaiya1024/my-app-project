@@ -4,7 +4,7 @@ import 'certificate_screen.dart';
 import 'payment_history_screen.dart';
 import 'my_documents_screen.dart';
 import 'shift_scheduler_screen.dart';
-import 'my_reviews.dart'; // নতুন রিভিউ স্ক্রিন ইমপোর্ট করা হলো
+import 'my_reviews.dart';
 
 class AmbassadorDashboard extends StatefulWidget {
   const AmbassadorDashboard({super.key});
@@ -14,9 +14,8 @@ class AmbassadorDashboard extends StatefulWidget {
 }
 
 class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
-  bool isOnDuty = true; // Duty Status Toggle State
+  bool isOnDuty = true;
 
-  // Teal & Mint Green Theme Colors
   final Color primaryTeal = const Color(0xFF0F766E);
   final Color mintAccent = const Color(0xFF14B8A6);
 
@@ -91,7 +90,6 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
     );
   }
 
-  // --- Drawer Widget with Navigation ---
   Widget _buildAppDrawer(BuildContext context) {
     return Drawer(
       child: ListView(
@@ -491,11 +489,11 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
+      child: const Padding(
+        padding: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
+          children: [
             Row(
               children: [
                 Icon(Icons.campaign, color: Colors.amber, size: 20),

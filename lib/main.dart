@@ -2,20 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'lang.dart';
 
-// Ambassador Imports (লক্ষ্য করুন এখানে যেন কোনো ফাইল দুইবার ইমপোর্ট না হয়)
+// Ambassador Imports (Ambassador ড্যাশবোর্ড ও রেজিস্ট্রেশন)
 import 'ambassador/ambassador_registration.dart';
-import 'ambassador/ambassador_page.dart';
 import 'ambassador/ambassador_dashboard.dart';
-import 'ambassador/profile_screen.dart';
-import 'ambassador/certificate_screen.dart';
-import 'ambassador/payment_history_screen.dart';
-import 'ambassador/my_documents_screen.dart';
-import 'ambassador/my_reviews.dart';
-import 'ambassador/shift_scheduler_screen.dart';
 
-// Other Roles Imports
+// Other Roles Imports (Family & Elderly)
 import 'elderly member/elderly_member_registration.dart';
-import 'elderly member/elderly_page.dart';
+import 'elderly member/elderly_page.dart'; // এখানে ElderlyDashboardScreen রয়েছে
 import 'family member/family_registration.dart';
 import 'family member/family_page.dart';
 
@@ -43,7 +36,7 @@ class MyApp extends StatelessWidget {
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
-      home: const LanguageSelectionScreen(),
+      home: const Splashscreen(),
     );
   }
 }
@@ -451,6 +444,7 @@ class _SignInScreenState extends State<SignInScreen> {
               ),
               const SizedBox(height: 10),
 
+              // LOGIN BUTTON ACTION
               SizedBox(
                 width: double.infinity,
                 height: 50,
@@ -497,6 +491,7 @@ class _SignInScreenState extends State<SignInScreen> {
               ),
               const SizedBox(height: 20),
 
+              // SIGN UP BUTTON ACTION
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
