@@ -3,34 +3,43 @@ import 'package:flutter/material.dart';
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
+  final Color primaryTeal = const Color(0xFF0F766E);
+  final Color lightTeal = const Color(0xFF14B8A6);
+  final Color backgroundColor = const Color(0xFFF4F7FA);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F7FA),
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         title: const Text("My Profile"),
-        backgroundColor: const Color(0xFF1E3C72),
+        backgroundColor: primaryTeal,
         foregroundColor: Colors.white,
+        elevation: 0,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            const Center(
+            Center(
               child: Stack(
                 children: [
                   CircleAvatar(
                     radius: 50,
-                    backgroundColor: Color(0xFF1E3C72),
-                    child: Icon(Icons.person, size: 60, color: Colors.white),
+                    backgroundColor: primaryTeal.withValues(alpha: 0.15),
+                    child: Icon(Icons.person, size: 60, color: primaryTeal),
                   ),
                   Positioned(
                     bottom: 0,
                     right: 0,
                     child: CircleAvatar(
                       radius: 16,
-                      backgroundColor: Colors.green,
-                      child: Icon(Icons.edit, size: 16, color: Colors.white),
+                      backgroundColor: lightTeal,
+                      child: const Icon(
+                        Icons.edit,
+                        size: 16,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ],
@@ -38,7 +47,7 @@ class ProfileScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             const Text(
-              "Jennie Akter",
+              "Sumaiya Shahara",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const Text(
@@ -46,15 +55,23 @@ class ProfileScreen extends StatelessWidget {
               style: TextStyle(color: Colors.grey, fontSize: 13),
             ),
             const SizedBox(height: 24),
-            _buildProfileCard(Icons.email, "Email", "jennieakter@gmail.com"),
-            _buildProfileCard(Icons.phone, "Phone", "+880 1712-345678"),
             _buildProfileCard(
-              Icons.location_on,
+              Icons.email_outlined,
+              "Email",
+              "jennieakter@gmail.com",
+            ),
+            _buildProfileCard(
+              Icons.phone_outlined,
+              "Phone",
+              "+880 1712-345678",
+            ),
+            _buildProfileCard(
+              Icons.location_on_outlined,
               "Address",
               "Gulshan, Dhaka, Bangladesh",
             ),
             _buildProfileCard(
-              Icons.verified_user,
+              Icons.verified_user_outlined,
               "Verification Status",
               "100% Verified",
             ),
@@ -65,20 +82,20 @@ class ProfileScreen extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red.shade50,
-                  foregroundColor: Colors.red,
+                  backgroundColor: lightTeal.withValues(alpha: 0.1),
+                  foregroundColor: primaryTeal,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   elevation: 0,
                 ),
                 onPressed: () {},
-                icon: const Icon(Icons.lock_reset, color: Colors.red),
-                label: const Text(
+                icon: Icon(Icons.lock_reset, color: primaryTeal),
+                label: Text(
                   "Change Password / Security",
                   style: TextStyle(
-                    color: Colors.red,
+                    color: primaryTeal,
                     fontWeight: FontWeight.bold,
                     fontSize: 15,
                   ),
@@ -93,11 +110,15 @@ class ProfileScreen extends StatelessWidget {
 
   Widget _buildProfileCard(IconData icon, String title, String value) {
     return Card(
-      elevation: 1,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      elevation: 0,
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: lightTeal.withValues(alpha: 0.15), width: 1),
+      ),
       margin: const EdgeInsets.only(bottom: 12),
       child: ListTile(
-        leading: Icon(icon, color: const Color(0xFF1E3C72)),
+        leading: Icon(icon, color: primaryTeal),
         title: Text(
           title,
           style: const TextStyle(fontSize: 12, color: Colors.grey),

@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 class PaymentHistoryScreen extends StatelessWidget {
   const PaymentHistoryScreen({super.key});
 
+  final Color primaryTeal = const Color(0xFF0F766E);
+  final Color lightTeal = const Color(0xFF14B8A6);
+  final Color backgroundColor = const Color(0xFFF4F7FA);
+
   @override
   Widget build(BuildContext context) {
     // পেমেন্ট ডেটার একটি লিস্ট তৈরি করা হলো
@@ -40,11 +44,12 @@ class PaymentHistoryScreen extends StatelessWidget {
     ];
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F7FA),
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         title: const Text("Payment History"),
-        backgroundColor: const Color(0xFF1E3C72),
+        backgroundColor: primaryTeal,
         foregroundColor: Colors.white,
+        elevation: 0,
       ),
       body: ListView.builder(
         padding: const EdgeInsets.all(16),
@@ -52,28 +57,44 @@ class PaymentHistoryScreen extends StatelessWidget {
         itemBuilder: (context, index) {
           final payment = paymentList[index];
           return Card(
-            elevation: 1,
+            elevation: 0,
+            color: Colors.white,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(12),
+              side: BorderSide(
+                color: lightTeal.withValues(alpha: 0.15),
+                width: 1,
+              ),
             ),
             margin: const EdgeInsets.only(bottom: 12),
             child: ListTile(
-              leading: const CircleAvatar(
-                backgroundColor: Color(0xFFE8F5E9),
-                child: Icon(Icons.arrow_downward, color: Colors.green),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 8,
+              ),
+              leading: CircleAvatar(
+                backgroundColor: lightTeal.withValues(alpha: 0.15),
+                child: Icon(Icons.arrow_downward, color: primaryTeal),
               ),
               title: Text(
                 payment["title"]!,
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 14,
+                  color: Colors.black87,
                 ),
               ),
-              subtitle: Text("${payment["date"]} • ${payment["method"]}"),
+              subtitle: Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  "${payment["date"]} • ${payment["method"]}",
+                  style: const TextStyle(color: Colors.grey, fontSize: 12),
+                ),
+              ),
               trailing: Text(
                 payment["amount"]!,
-                style: const TextStyle(
-                  color: Colors.green,
+                style: TextStyle(
+                  color: primaryTeal,
                   fontWeight: FontWeight.bold,
                   fontSize: 15,
                 ),

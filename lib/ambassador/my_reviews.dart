@@ -3,9 +3,13 @@ import 'package:flutter/material.dart';
 class MyReviewsScreen extends StatelessWidget {
   const MyReviewsScreen({super.key});
 
+  final Color primaryTeal = const Color(0xFF0F766E);
+  final Color lightTeal = const Color(0xFF14B8A6);
+  final Color backgroundColor = const Color(0xFFF4F7FA);
+
   @override
   Widget build(BuildContext context) {
-    // ইউজারের পাওয়া রিভিউগুলোর একটি স্যাম্পল লিস্ট
+    // ইউজারের পাওয়া রিভিউগুলোর একটি স্যাম্পল লিস্ট
     final List<Map<String, dynamic>> reviewList = [
       {
         "clientName": "Rahim Ahmed",
@@ -33,11 +37,12 @@ class MyReviewsScreen extends StatelessWidget {
     ];
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F7FA),
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         title: const Text("My Reviews & Ratings"),
-        backgroundColor: const Color(0xFF1E3C72),
+        backgroundColor: primaryTeal,
         foregroundColor: Colors.white,
+        elevation: 0,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -47,15 +52,11 @@ class MyReviewsScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF1E3C72), Color(0xFF2A5298)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
+                color: primaryTeal,
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.blue.shade100,
+                    color: lightTeal.withValues(alpha: 0.2),
                     blurRadius: 8,
                     spreadRadius: 2,
                   ),
@@ -127,7 +128,7 @@ class MyReviewsScreen extends StatelessWidget {
             ),
             const SizedBox(height: 10),
 
-            // ৩. ডায়নামিক রিভিউ কার্ড লিস্ট
+            // ৩. ডায়নামিক রিভিউ কার্ড লিস্ট
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -140,13 +141,10 @@ class MyReviewsScreen extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.shade200,
-                        blurRadius: 6,
-                        spreadRadius: 1,
-                      ),
-                    ],
+                    border: Border.all(
+                      color: lightTeal.withValues(alpha: 0.15),
+                      width: 1,
+                    ),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -157,11 +155,13 @@ class MyReviewsScreen extends StatelessWidget {
                           Row(
                             children: [
                               CircleAvatar(
-                                backgroundColor: Colors.blue.shade50,
+                                backgroundColor: lightTeal.withValues(
+                                  alpha: 0.15,
+                                ),
                                 child: Text(
                                   review["clientName"][0],
-                                  style: const TextStyle(
-                                    color: Color(0xFF1E3C72),
+                                  style: TextStyle(
+                                    color: primaryTeal,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -175,6 +175,7 @@ class MyReviewsScreen extends StatelessWidget {
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 14,
+                                      color: Colors.black87,
                                     ),
                                   ),
                                   Text(
@@ -207,6 +208,7 @@ class MyReviewsScreen extends StatelessWidget {
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 13,
+                              color: Colors.black87,
                             ),
                           ),
                         ],

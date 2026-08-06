@@ -5,6 +5,9 @@ import 'payment_history_screen.dart';
 import 'my_documents_screen.dart';
 import 'shift_scheduler_screen.dart';
 import 'my_reviews.dart';
+import 'message_to_ceo.dart';
+import 'help.dart';
+import 'settings.dart';
 
 class AmbassadorDashboard extends StatefulWidget {
   const AmbassadorDashboard({super.key});
@@ -182,20 +185,45 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
             },
           ),
           const Divider(),
+
           ListTile(
-            leading: const Icon(Icons.message),
+            leading: Icon(
+              Icons.admin_panel_settings_outlined,
+              color: primaryTeal,
+            ),
             title: const Text("Message to CEO"),
-            onTap: () {},
+            trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const MessageToCeoScreen(),
+                ),
+              );
+            },
           ),
           ListTile(
             leading: const Icon(Icons.support_agent),
             title: const Text("Help & Support"),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const HelpSupportScreen(),
+                ),
+              );
+            },
           ),
+
           ListTile(
             leading: const Icon(Icons.settings),
             title: const Text("Settings"),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SettingsScreen()),
+              );
+            },
           ),
           const Divider(),
           ListTile(
