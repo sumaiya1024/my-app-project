@@ -1,11 +1,109 @@
 import 'package:flutter/material.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
   final Color primaryTeal = const Color(0xFF0F766E);
   final Color lightTeal = const Color(0xFF14B8A6);
   final Color backgroundColor = const Color(0xFFF4F7FA);
+
+  // প্রোফাইল লক/আনলক স্টেট (ডিফল্টভাবে লক থাকবে)
+  bool _isProfileLocked = true;
+
+  // টেক্সট কন্ট্রোলারসমূহ
+  final TextEditingController _nameController = TextEditingController(
+    text: "Jennie Kim",
+  );
+  final TextEditingController _phoneController = TextEditingController(
+    text: "+880 1712-345678",
+  );
+  final TextEditingController _emailController = TextEditingController(
+    text: "jennie.care@kinvera.com",
+  );
+  final TextEditingController _addressController = TextEditingController(
+    text: "Gulshan-2, Dhaka, Bangladesh",
+  );
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _phoneController.dispose();
+    _emailController.dispose();
+    _addressController.dispose();
+    super.dispose();
+  }
+
+  // আনলক করার ডায়ালগ দেখানোর ফাংশন
+  void _showUnlockDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(
+          children: [
+            Icon(Icons.lock_open_rounded, color: primaryTeal, size: 28),
+            const SizedBox(width: 8),
+            const Text("Unlock Profile?"),
+          ],
+        ),
+        content: const Text(
+          "Your profile is currently locked for security. Do you want to unlock it to edit your details?",
+          style: TextStyle(color: Colors.black87, fontSize: 14),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context), // Cancel
+            child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: primaryTeal,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            onPressed: () {
+              setState(() {
+                _isProfileLocked = false; // আনলক হয়ে গেল
+              });
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text(
+                    "Profile unlocked! You can now edit your details.",
+                  ),
+                  backgroundColor: Colors.green,
+                ),
+              );
+            },
+            child: const Text(
+              "Yes, Unlock",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // সেভ করার ফাংশন (সেভ করলে আবার লক হয়ে যাবে)
+  void _saveProfile() {
+    setState(() {
+      _isProfileLocked = true; // সেভ করার পর আবার লক করে দেওয়া হলো
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Profile updated and locked successfully!"),
+        backgroundColor: Colors.teal,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,120 +114,223 @@ class ProfileScreen extends StatelessWidget {
         backgroundColor: primaryTeal,
         foregroundColor: Colors.white,
         elevation: 0,
+        actions: [
+          // অ্যাপবারের লক/আনলক স্ট্যাটাস বাটন
+          IconButton(
+            icon: Icon(
+              _isProfileLocked ? Icons.lock_rounded : Icons.lock_open_rounded,
+              color: _isProfileLocked ? Colors.amberAccent : Colors.white,
+            ),
+            tooltip: _isProfileLocked
+                ? "Profile is Locked"
+                : "Profile is Unlocked",
+            onPressed: () {
+              if (_isProfileLocked) {
+                _showUnlockDialog();
+              } else {
+                setState(() {
+                  _isProfileLocked = true; // চাইলে ম্যানুয়ালি আবার লক করা যাবে
+                });
+              }
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(
-              child: Stack(
+            // ১. স্ট্যাটাস ব্যানার (লক নাকি আনলক তা বোঝানোর জন্য)
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: _isProfileLocked
+                    ? Colors.amber.shade50
+                    : Colors.teal.shade50,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: _isProfileLocked ? Colors.amber.shade300 : lightTeal,
+                  width: 1,
+                ),
+              ),
+              child: Row(
                 children: [
-                  CircleAvatar(
-                    radius: 50,
-                    backgroundColor: primaryTeal.withValues(alpha: 0.15),
-                    child: Icon(Icons.person, size: 60, color: primaryTeal),
+                  Icon(
+                    _isProfileLocked
+                        ? Icons.lock_outline
+                        : Icons.lock_open_outlined,
+                    color: _isProfileLocked
+                        ? Colors.amber.shade800
+                        : primaryTeal,
+                    size: 28,
                   ),
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: CircleAvatar(
-                      radius: 16,
-                      backgroundColor: lightTeal,
-                      child: const Icon(
-                        Icons.edit,
-                        size: 16,
-                        color: Colors.white,
-                      ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _isProfileLocked
+                              ? "Profile is Locked"
+                              : "Profile is Unlocked for Editing",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                            color: _isProfileLocked
+                                ? Colors.amber.shade900
+                                : primaryTeal,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          _isProfileLocked
+                              ? "Tap the lock icon above or click unlock to edit your info."
+                              : "Make your changes and tap save below.",
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
+                  if (_isProfileLocked)
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.amber,
+                        foregroundColor: Colors.black87,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        minimumSize: Size.zero,
+                      ),
+                      onPressed: _showUnlockDialog,
+                      child: const Text(
+                        "Unlock",
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
+
+            // ২. প্রোফাইল ইনফো ফিল্ডসমূহ
             const Text(
-              "Sumaiya Shahara",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              "Personal Information",
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
             ),
-            const Text(
-              "Care Ambassador | ID: 418613",
-              style: TextStyle(color: Colors.grey, fontSize: 13),
+            const SizedBox(height: 10),
+
+            _buildTextField(
+              controller: _nameController,
+              label: "Full Name",
+              icon: Icons.person_outline,
+              enabled: !_isProfileLocked, // লক থাকলে এডিট করা যাবে না
             ),
-            const SizedBox(height: 24),
-            _buildProfileCard(
-              Icons.email_outlined,
-              "Email",
-              "jennieakter@gmail.com",
+            const SizedBox(height: 14),
+
+            _buildTextField(
+              controller: _phoneController,
+              label: "Phone Number",
+              icon: Icons.phone_outlined,
+              enabled: !_isProfileLocked,
             ),
-            _buildProfileCard(
-              Icons.phone_outlined,
-              "Phone",
-              "+880 1712-345678",
+            const SizedBox(height: 14),
+
+            _buildTextField(
+              controller: _emailController,
+              label: "Email Address",
+              icon: Icons.email_outlined,
+              enabled: !_isProfileLocked,
             ),
-            _buildProfileCard(
-              Icons.location_on_outlined,
-              "Address",
-              "Gulshan, Dhaka, Bangladesh",
-            ),
-            _buildProfileCard(
-              Icons.verified_user_outlined,
-              "Verification Status",
-              "100% Verified",
+            const SizedBox(height: 14),
+
+            _buildTextField(
+              controller: _addressController,
+              label: "Address",
+              icon: Icons.location_on_outlined,
+              enabled: !_isProfileLocked,
+              maxLines: 2,
             ),
             const SizedBox(height: 24),
 
-            // Change Password / Security Button
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: lightTeal.withValues(alpha: 0.1),
-                  foregroundColor: primaryTeal,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+            // ৩. সেভ বাটন (প্রোফাইল আনলক থাকলেই শুধু কাজ করবে বা দৃশ্যমান হবে)
+            if (!_isProfileLocked)
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryTeal,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 0,
                   ),
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  elevation: 0,
-                ),
-                onPressed: () {},
-                icon: Icon(Icons.lock_reset, color: primaryTeal),
-                label: Text(
-                  "Change Password / Security",
-                  style: TextStyle(
-                    color: primaryTeal,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
+                  onPressed: _saveProfile,
+                  icon: const Icon(Icons.save_rounded),
+                  label: const Text(
+                    "Save & Lock Profile",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
-            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildProfileCard(IconData icon, String title, String value) {
-    return Card(
-      elevation: 0,
-      color: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: lightTeal.withValues(alpha: 0.15), width: 1),
+  // কাস্টম টেক্সট ফিল্ড উইজেট
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    required bool enabled,
+    int maxLines = 1,
+  }) {
+    return TextField(
+      controller: controller,
+      enabled: enabled,
+      maxLines: maxLines,
+      style: TextStyle(
+        color: enabled ? Colors.black87 : Colors.grey.shade700,
+        fontWeight: FontWeight.w500,
       ),
-      margin: const EdgeInsets.only(bottom: 12),
-      child: ListTile(
-        leading: Icon(icon, color: primaryTeal),
-        title: Text(
-          title,
-          style: const TextStyle(fontSize: 12, color: Colors.grey),
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: TextStyle(color: enabled ? primaryTeal : Colors.grey),
+        filled: true,
+        fillColor: enabled
+            ? Colors.white
+            : Colors.grey.shade200, // লক থাকলে ব্যাকগ্রাউন্ড গ্রে দেখাবে
+        prefixIcon: Icon(icon, color: enabled ? primaryTeal : Colors.grey),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: lightTeal.withValues(alpha: 0.15)),
         ),
-        subtitle: Text(
-          value,
-          style: const TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-          ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: lightTeal.withValues(alpha: 0.15)),
+        ),
+        disabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade300),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: primaryTeal, width: 2),
         ),
       ),
     );

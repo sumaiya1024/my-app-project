@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../main.dart'; // RoleSelectionScreen পাওয়ার জন্য main.dart ইমপোর্ট করা হলো
 import 'profile_screen.dart';
 import 'certificate_screen.dart';
 import 'payment_history_screen.dart';
@@ -7,7 +8,8 @@ import 'shift_scheduler_screen.dart';
 import 'my_reviews.dart';
 import 'message_to_ceo.dart';
 import 'help.dart';
-import 'settings.dart';
+import 'settings.dart' as app_settings;
+import 'logout.dart';
 
 class AmbassadorDashboard extends StatefulWidget {
   const AmbassadorDashboard({super.key});
@@ -221,15 +223,128 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                MaterialPageRoute(
+                  builder: (context) => const app_settings.SettingsScreen(),
+                ),
               );
             },
           ),
           const Divider(),
+
+          // লগআউট অপশন এবং রোল সিলেকশনে রিডাইরেক্ট করার লজিক
           ListTile(
             leading: const Icon(Icons.logout, color: Colors.red),
             title: const Text("Logout", style: TextStyle(color: Colors.red)),
-            onTap: () {},
+            onTap: () {
+              Navigator.pop(context); // ড্রয়ার বন্ধ করা হলো
+
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  bool rememberDevice = false;
+                  return StatefulBuilder(
+                    builder: (context, setDialogState) {
+                      return AlertDialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        title: Row(
+                          children: const [
+                            Icon(
+                              Icons.logout_rounded,
+                              color: Colors.red,
+                              size: 28,
+                            ),
+                            SizedBox(width: 8),
+                            Text(
+                              "Log Out",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Are you sure you want to sign out from your account?",
+                              style: TextStyle(
+                                color: Colors.black87,
+                                fontSize: 14,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            CheckboxListTile(
+                              contentPadding: EdgeInsets.zero,
+                              title: const Text(
+                                "Remember this device for quick login",
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              value: rememberDevice,
+                              activeColor: primaryTeal,
+                              controlAffinity: ListTileControlAffinity.leading,
+                              onChanged: (bool? value) {
+                                setDialogState(() {
+                                  rememberDevice = value ?? false;
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text(
+                              "Cancel",
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              elevation: 0,
+                            ),
+                            onPressed: () {
+                              if (rememberDevice) {
+                                // ডিভাইস সেভ করার লজিক
+                              }
+                              Navigator.pop(context); // ডায়ালগ বন্ধ হবে
+
+                              // লগআউট করার পর সরাসরি রোল সিলেকশন স্ক্রিনে নিয়ে যাওয়া হবে
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const RoleSelectionScreen(),
+                                ),
+                                (route) => false,
+                              );
+                            },
+                            child: const Text(
+                              "Log Out",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+              );
+            },
           ),
         ],
       ),
