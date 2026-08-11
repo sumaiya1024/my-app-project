@@ -8,7 +8,7 @@ import 'ambassador/ambassador_dashboard.dart';
 
 // Other Roles Imports (Family & Elderly)
 import 'elderly member/elderly_member_registration.dart';
-import 'elderly member/elderly_page.dart'; // এখানে ElderlyDashboardScreen রয়েছে
+import 'elderly member/elderly_page.dart'; // এখানে ElderlyDashboardScreen রয়েছে
 import 'family member/family_registration.dart';
 import 'family member/family_page.dart';
 
@@ -341,6 +341,74 @@ class _SignInScreenState extends State<SignInScreen> {
   final Color primaryTeal = const Color(0xFF0F766E);
   bool isPasswordHidden = true;
 
+  // ফরেগট পাসওয়ার্ড ডায়ালগ পপআপ ফাংশন
+  void _showForgotPasswordDialog(BuildContext context) {
+    final TextEditingController emailController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: const Text(
+            "Reset Password",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                "Enter your email address to receive a password reset link.",
+                style: TextStyle(fontSize: 13, color: Colors.black87),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: emailController,
+                decoration: InputDecoration(
+                  labelText: "Email Address",
+                  prefixIcon: const Icon(Icons.email_outlined),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: primaryTeal, width: 2),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: primaryTeal,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text("Password reset link sent to your email!"),
+                  ),
+                );
+              },
+              child: const Text("Send"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -432,10 +500,13 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
               ),
 
+              // Forgot Password Action Added Here
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    _showForgotPasswordDialog(context);
+                  },
                   child: Text(
                     "forgot_password".tr(),
                     style: TextStyle(color: primaryTeal),

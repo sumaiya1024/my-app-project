@@ -17,13 +17,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   // টেক্সট কন্ট্রোলারসমূহ
   final TextEditingController _nameController = TextEditingController(
-    text: "Jennie Kim",
+    text: "Jennie Akter",
   );
   final TextEditingController _phoneController = TextEditingController(
     text: "+880 1712-345678",
   );
   final TextEditingController _emailController = TextEditingController(
-    text: "jennie.care@kinvera.com",
+    text: "jennieakter@gmail.com",
   );
   final TextEditingController _addressController = TextEditingController(
     text: "Gulshan-2, Dhaka, Bangladesh",

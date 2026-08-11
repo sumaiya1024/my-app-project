@@ -74,7 +74,7 @@ class HelpSupportScreen extends StatelessWidget {
           ),
           const SizedBox(height: 10),
 
-          // কন্টাক্ট কার্ডসমূহ (কালারফুল আইকনসহ)
+          // কন্টাক্ট কার্ডসমূহ (কালারফুল সার্কেল আইকনসহ)
           _buildSupportCard(
             context,
             icon: Icons.phone_in_talk_rounded,
@@ -82,7 +82,7 @@ class HelpSupportScreen extends StatelessWidget {
             title: "Call Helpline",
             subtitle: "+880 9612-345678 (24/7)",
             onTap: () {
-              // কল করার লজিক
+              // কল করার লজিক এখানে যুক্ত করুন
             },
           ),
           _buildSupportCard(
@@ -92,7 +92,7 @@ class HelpSupportScreen extends StatelessWidget {
             title: "Live Chat Support",
             subtitle: "Chat instantly with our support executive",
             onTap: () {
-              // লাইভ চ্যাট লজিক
+              // লাইভ চ্যাট লজিক এখানে যুক্ত করুন
             },
           ),
           _buildSupportCard(
@@ -102,7 +102,7 @@ class HelpSupportScreen extends StatelessWidget {
             title: "Email Support",
             subtitle: "support@kinvera.com",
             onTap: () {
-              // ইমেইল লজিক
+              // ইমেইল লজিক এখানে যুক্ত করুন
             },
           ),
 
@@ -125,7 +125,7 @@ class HelpSupportScreen extends StatelessWidget {
             title: "Frequently Asked Questions",
             subtitle: "Find answers to common questions",
             onTap: () {
-              // FAQ লজিক
+              // FAQ লজিক এখানে যুক্ত করুন
             },
           ),
           _buildSupportCard(
@@ -135,7 +135,7 @@ class HelpSupportScreen extends StatelessWidget {
             title: "Ambassador Guidebook",
             subtitle: "Learn how to manage shifts and services",
             onTap: () {
-              // গাইডবুক লজিক
+              // গাইডবুক লজিক এখানে যুক্ত করুন
             },
           ),
         ],
@@ -143,6 +143,7 @@ class HelpSupportScreen extends StatelessWidget {
     );
   }
 
+  // কাস্টম কালারফুল সাপোর্ট কার্ড উইজেট
   Widget _buildSupportCard(
     BuildContext context, {
     required IconData icon,
