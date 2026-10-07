@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:open_filex/open_filex.dart';
+import 'dart:io';
 
 class CertificateScreen extends StatelessWidget {
   const CertificateScreen({super.key});
@@ -7,27 +11,74 @@ class CertificateScreen extends StatelessWidget {
   final Color lightTeal = const Color(0xFF14B8A6);
   final Color backgroundColor = const Color(0xFFF4F7FA);
 
+  // পিসি ও মোবাইল উভয়ের জন্য একদম নিরাপদ ডাউনলোড ফাংশন
+  Future<void> _downloadAndOpenCertificate(
+    BuildContext context,
+    String title,
+    String url,
+  ) async {
+    try {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Downloading $title..."),
+          backgroundColor: primaryTeal,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+
+      // ডেস্কটপ এবং মোবাইল সব জায়গার জন্যই ডকুমেন্টস ডিরেক্টরি সেফ ও কাজ করে
+      Directory directory = await getApplicationDocumentsDirectory();
+
+      String fileName = "${title.replaceAll(' ', '_')}.pdf";
+      String filePath = "${directory.path}/$fileName";
+
+      // Dio দিয়ে ফাইল ডাউনলোড করা
+      await Dio().download(url, filePath);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Download Complete! Opening file..."),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+      // ফাইল ওপেন করা
+      await OpenFilex.open(filePath);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Download Failed: $e"),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    // অর্জিত সার্টিফিকেটগুলোর একটি লিস্ট
     final List<Map<String, String>> certificateList = [
       {
         "title": "Professional Caregiver Training",
         "issueDate": "January 15, 2026",
         "status": "Verified & Active",
         "id": "CERT-849201",
+        "downloadUrl":
+            "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
       },
       {
         "title": "Elderly First Aid & Safety",
         "issueDate": "March 10, 2026",
         "status": "Verified & Active",
         "id": "CERT-849202",
+        "downloadUrl":
+            "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
       },
       {
         "title": "Advanced Health Support Provider",
         "issueDate": "Pending Assessment",
         "status": "In Progress",
         "id": "CERT-PENDING",
+        "downloadUrl": "",
       },
     ];
 
@@ -42,19 +93,11 @@ class CertificateScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // উপরের ব্যানার কার্ড
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: primaryTeal,
               borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: lightTeal.withValues(alpha: 0.2),
-                  blurRadius: 8,
-                  spreadRadius: 2,
-                ),
-              ],
             ),
             child: const Row(
               children: [
@@ -93,81 +136,90 @@ class CertificateScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-
-          // সার্টিফিকেট লিস্ট
           ...certificateList.map((cert) {
             bool isVerified = cert["status"] == "Verified & Active";
-            return Container(
-              margin: const EdgeInsets.only(bottom: 12),
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: lightTeal.withValues(alpha: 0.15),
-                  width: 1,
+
+            return GestureDetector(
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("Selected: ${cert["title"]} (${cert["id"]})"),
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+              },
+              child: Container(
+                margin: const EdgeInsets.only(bottom: 12),
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: lightTeal.withValues(alpha: 0.15),
+                    width: 1,
+                  ),
                 ),
-              ),
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    backgroundColor: isVerified
-                        ? lightTeal.withValues(alpha: 0.15)
-                        : Colors.orange.withValues(alpha: 0.15),
-                    child: Icon(
-                      isVerified ? Icons.verified : Icons.hourglass_top,
-                      color: isVerified ? primaryTeal : Colors.orange.shade800,
-                    ),
-                  ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          cert["title"]!,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                            color: Colors.black87,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          "ID: ${cert["id"]} • ${cert["issueDate"]}",
-                          style: const TextStyle(
-                            color: Colors.grey,
-                            fontSize: 11,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          cert["status"]!,
-                          style: TextStyle(
-                            color: isVerified
-                                ? primaryTeal
-                                : Colors.orange.shade800,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  if (isVerified)
-                    Container(
-                      decoration: BoxDecoration(
-                        color: lightTeal.withValues(alpha: 0.1),
-                        shape: BoxShape.circle,
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: isVerified
+                          ? lightTeal.withValues(alpha: 0.15)
+                          : Colors.orange.withValues(alpha: 0.15),
+                      child: Icon(
+                        isVerified ? Icons.verified : Icons.hourglass_top,
+                        color: isVerified
+                            ? primaryTeal
+                            : Colors.orange.shade800,
                       ),
-                      child: IconButton(
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            cert["title"]!,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            "ID: ${cert["id"]} • ${cert["issueDate"]}",
+                            style: const TextStyle(
+                              color: Colors.grey,
+                              fontSize: 11,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            cert["status"]!,
+                            style: TextStyle(
+                              color: isVerified
+                                  ? primaryTeal
+                                  : Colors.orange.shade800,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (isVerified)
+                      IconButton(
                         icon: Icon(Icons.download_outlined, color: primaryTeal),
                         onPressed: () {
-                          // ডাউনলোড বা ভিউ করার অপশন
+                          _downloadAndOpenCertificate(
+                            context,
+                            cert["title"]!,
+                            cert["downloadUrl"]!,
+                          );
                         },
                       ),
-                    ),
-                ],
+                  ],
+                ),
               ),
             );
           }),
