@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../main.dart'; // RoleSelectionScreen পাওয়ার জন্য main.dart ইমপোর্ট করা হলো
+import 'package:kinvera/screens/role_selection_screen.dart'; // RoleSelectionScreen পাওয়ার জন্য main.dart ইমপোর্ট করা হলো
 import 'profile_screen.dart';
 import 'certificate_screen.dart';
 import 'payment_history_screen.dart';

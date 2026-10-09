@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'screens/splash_screen.dart'; // স্প্ল্যাশ স্ক্রিন ফাইলটি সঠিক ফোল্ডার থেকে ইম্পোর্ট করা হলো
-import 'screens/role_selection_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,7 +26,7 @@ class MyApp extends StatelessWidget {
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
-      home: const Splashscreen(),
+      home: const SplashScreen(),
     );
   }
 }

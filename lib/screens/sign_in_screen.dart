@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 // Ambassador Imports
-import 'ambassador/ambassador_registration.dart';
-import 'ambassador/ambassador_dashboard.dart';
+import 'package:kinvera/ambassador/ambassador_registration.dart';
+import 'package:kinvera/ambassador/ambassador_dashboard.dart';
+import 'package:kinvera/elderly%20member/elderly_member_registration.dart';
+import 'package:kinvera/elderly%20member/elderly_page.dart';
+import 'package:kinvera/family%20member/family_page.dart';
+import 'package:kinvera/family%20member/family_registration.dart';
 
 // Other Roles Imports (Family & Elderly)
-import 'elderly member/elderly_member_registration.dart';
-import 'elderly member/elderly_page.dart';
-import 'family member/family_registration.dart';
-import 'family member/family_page.dart';
 
 class SignInScreen extends StatefulWidget {
   final String role;

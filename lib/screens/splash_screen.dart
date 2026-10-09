@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 // যেহেতু এটি screens ফোল্ডারে আছে, তাই ../lang.dart দিয়ে বাইরে বের হতে হবে
 import '../lang.dart';
 import '../constants.dart';
-import 'role_selection_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
