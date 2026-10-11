@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "494526398119",
+    "project_id": "my-app-project-1c8f1",
+    "storage_bucket": "my-app-project-1c8f1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:494526398119:android:84b23f3f6c21c739ac2582",
+        "android_client_info": {
+          "package_name": "com.example.kinvera"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtyTgIIVVukxec2NoioX3vn1bp_-YE18Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
