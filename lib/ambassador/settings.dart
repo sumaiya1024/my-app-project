@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../theme_manager.dart';
+import '../constants.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -8,26 +10,38 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  final Color primaryTeal = const Color(0xFF0F766E);
-  final Color lightTeal = const Color(0xFF14B8A6);
-  final Color backgroundColor = const Color(0xFFF4F7FA);
+  final Color primaryTeal = AppColors.primaryTeal;
+  final Color lightTeal = AppColors.lightTeal;
 
   // সুইচ স্টেটগুলোর জন্য ভেরিয়েবল
   bool _pushNotifications = true;
   bool _emailNotifications = false;
-  bool _darkMode = false;
+  late bool _darkMode;
   bool _locationTracking = true;
 
   // ভাষা সিলেকশনের ভেরিয়েবল
   String _selectedLanguage = "English (US)";
 
   @override
+  void initState() {
+    super.initState();
+    _darkMode = ThemeManager.isDarkMode;
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final isDark = _darkMode;
+    final bgColor = isDark ? AppColors.darkBackground : AppColors.backgroundColor;
+    final cardColor = isDark ? AppColors.darkCard : Colors.white;
+    final textColor = isDark ? AppColors.darkTextPrimary : Colors.black87;
+    final subtitleColor = isDark ? AppColors.darkTextSecondary : Colors.grey;
+    final borderColor = isDark ? AppColors.darkBorder : lightTeal.withValues(alpha: 0.15);
+
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: bgColor,
       appBar: AppBar(
         title: const Text("Settings"),
-        backgroundColor: primaryTeal,
+        backgroundColor: isDark ? const Color(0xFF131D24) : primaryTeal,
         foregroundColor: Colors.white,
         elevation: 0,
       ),
@@ -38,11 +52,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: primaryTeal,
+              gradient: isDark
+                  ? const LinearGradient(
+                      colors: [Color(0xFF163238), Color(0xFF1F4A4E)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    )
+                  : LinearGradient(
+                      colors: [primaryTeal, lightTeal],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: lightTeal.withValues(alpha: 0.2),
+                  color: isDark
+                      ? Colors.black26
+                      : lightTeal.withValues(alpha: 0.2),
                   blurRadius: 8,
                   spreadRadius: 2,
                 ),
@@ -78,12 +104,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: 20),
 
           // ২. নোটিফিকেশন সেকশন
-          const Text(
+          Text(
             "Notifications",
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: Colors.black87,
+              color: textColor,
             ),
           ),
           const SizedBox(height: 10),
@@ -94,6 +120,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: "Push Notifications",
             subtitle: "Receive alerts for new shifts and updates",
             value: _pushNotifications,
+            cardColor: cardColor,
+            textColor: textColor,
+            subtitleColor: subtitleColor,
+            borderColor: borderColor,
             onChanged: (val) {
               setState(() {
                 _pushNotifications = val;
@@ -110,6 +140,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: "Email Notifications",
             subtitle: "Get weekly summary and payment statements",
             value: _emailNotifications,
+            cardColor: cardColor,
+            textColor: textColor,
+            subtitleColor: subtitleColor,
+            borderColor: borderColor,
             onChanged: (val) {
               setState(() {
                 _emailNotifications = val;
@@ -123,27 +157,40 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: 10),
 
           // ৩. অ্যাপ প্রেফারেন্স সেকশন
-          const Text(
+          Text(
             "Preferences",
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: Colors.black87,
+              color: textColor,
             ),
           ),
           const SizedBox(height: 10),
 
+          // ডার্ক মোড সুইচ (ফুললি এনাবল্ড)
           _buildSwitchTile(
-            icon: Icons.dark_mode_rounded,
-            iconColor: Colors.purple,
+            icon: isDark ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
+            iconColor: isDark ? Colors.amber : Colors.purple,
             title: "Dark Mode",
-            subtitle: "Switch between light and dark theme",
+            subtitle: isDark
+                ? "Dark theme active (switch for light mode)"
+                : "Switch between light and dark theme",
             value: _darkMode,
-            onChanged: (val) {
+            cardColor: cardColor,
+            textColor: textColor,
+            subtitleColor: subtitleColor,
+            borderColor: borderColor,
+            onChanged: (val) async {
               setState(() {
                 _darkMode = val;
               });
-              _showToast(context, "Dark Mode is coming soon!");
+              await ThemeManager.setDarkMode(val);
+              if (context.mounted) {
+                _showToast(
+                  context,
+                  val ? "🌙 Dark Mode Enabled" : "☀️ Light Mode Enabled",
+                );
+              }
             },
           ),
           _buildSwitchTile(
@@ -152,6 +199,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: "Location Access",
             subtitle: "Required for shift tracking and check-ins",
             value: _locationTracking,
+            cardColor: cardColor,
+            textColor: textColor,
+            subtitleColor: subtitleColor,
+            borderColor: borderColor,
             onChanged: (val) {
               setState(() {
                 _locationTracking = val;
@@ -167,30 +218,38 @@ class _SettingsScreenState extends State<SettingsScreen> {
             iconColor: Colors.teal,
             title: "App Language",
             subtitle: _selectedLanguage,
+            cardColor: cardColor,
+            textColor: textColor,
+            subtitleColor: subtitleColor,
+            borderColor: borderColor,
             onTap: () {
-              _showLanguageDialog(context);
+              _showLanguageDialog(context, isDark, cardColor, textColor);
             },
           ),
           const SizedBox(height: 10),
 
           // ৪. সিকিউরিটি এবং অ্যাকাউন্ট সেকশন
-          const Text(
+          Text(
             "Security & Account",
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: Colors.black87,
+              color: textColor,
             ),
           ),
           const SizedBox(height: 10),
 
           _buildActionTile(
             icon: Icons.lock_reset_rounded,
-            iconColor: Colors.indigo,
+            iconColor: Colors.indigoAccent,
             title: "Change Password",
             subtitle: "Update your account password regularly",
+            cardColor: cardColor,
+            textColor: textColor,
+            subtitleColor: subtitleColor,
+            borderColor: borderColor,
             onTap: () {
-              _showChangePasswordDialog(context);
+              _showChangePasswordDialog(context, isDark, cardColor, textColor);
             },
           ),
           _buildActionTile(
@@ -198,8 +257,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
             iconColor: Colors.brown,
             title: "Privacy Policy",
             subtitle: "Read our terms and data policy",
+            cardColor: cardColor,
+            textColor: textColor,
+            subtitleColor: subtitleColor,
+            borderColor: borderColor,
             onTap: () {
-              _showPrivacyPolicyBottomSheet(context);
+              _showPrivacyPolicyBottomSheet(context, isDark, cardColor, textColor, subtitleColor);
             },
           ),
           const SizedBox(height: 10),
@@ -207,10 +270,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
           // ৫. লগআউট বাটন (ফুললি সচল)
           Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: cardColor,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: Colors.red.withValues(alpha: 0.2),
+                color: Colors.red.withValues(alpha: 0.3),
                 width: 1,
               ),
             ),
@@ -231,9 +294,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   color: Colors.red,
                 ),
               ),
-              subtitle: const Text(
+              subtitle: Text(
                 "Sign out from your account safely",
-                style: TextStyle(color: Colors.grey, fontSize: 12),
+                style: TextStyle(color: subtitleColor, fontSize: 12),
               ),
               trailing: const Icon(
                 Icons.arrow_forward_ios,
@@ -241,7 +304,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 color: Colors.red,
               ),
               onTap: () {
-                _showLogoutDialog(context);
+                _showLogoutDialog(context, isDark, cardColor, textColor, subtitleColor);
               },
             ),
           ),
@@ -263,21 +326,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   // ভাষা পরিবর্তনের ডায়ালগ
-  void _showLanguageDialog(BuildContext context) {
+  void _showLanguageDialog(
+    BuildContext context,
+    bool isDark,
+    Color cardColor,
+    Color textColor,
+  ) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: cardColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text("Select Language"),
+        title: Text(
+          "Select Language",
+          style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              title: const Text("English (US)"),
+              title: Text("English (US)", style: TextStyle(color: textColor)),
               leading: Radio<String>(
                 value: "English (US)",
                 groupValue: _selectedLanguage,
-                activeColor: primaryTeal,
+                activeColor: lightTeal,
                 onChanged: (val) {
                   setState(() => _selectedLanguage = val!);
                   Navigator.pop(context);
@@ -289,11 +361,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
               },
             ),
             ListTile(
-              title: const Text("বাংলা (Bangla)"),
+              title: Text("বাংলা (Bangla)", style: TextStyle(color: textColor)),
               leading: Radio<String>(
                 value: "বাংলা (Bangla)",
                 groupValue: _selectedLanguage,
-                activeColor: primaryTeal,
+                activeColor: lightTeal,
                 onChanged: (val) {
                   setState(() => _selectedLanguage = val!);
                   Navigator.pop(context);
@@ -311,29 +383,48 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   // পাসওয়ার্ড পরিবর্তনের ডায়ালগ
-  void _showChangePasswordDialog(BuildContext context) {
+  void _showChangePasswordDialog(
+    BuildContext context,
+    bool isDark,
+    Color cardColor,
+    Color textColor,
+  ) {
     final TextEditingController oldPassController = TextEditingController();
     final TextEditingController newPassController = TextEditingController();
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: cardColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text("Change Password"),
+        title: Text(
+          "Change Password",
+          style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
               controller: oldPassController,
               obscureText: true,
-              decoration: const InputDecoration(labelText: "Current Password"),
+              style: TextStyle(color: textColor),
+              decoration: InputDecoration(
+                labelText: "Current Password",
+                labelStyle: TextStyle(
+                  color: isDark ? AppColors.darkTextSecondary : Colors.grey.shade700,
+                ),
+              ),
             ),
             const SizedBox(height: 10),
             TextField(
               controller: newPassController,
               obscureText: true,
-              decoration: const InputDecoration(
+              style: TextStyle(color: textColor),
+              decoration: InputDecoration(
                 labelText: "New Password (min 6 chars)",
+                labelStyle: TextStyle(
+                  color: isDark ? AppColors.darkTextSecondary : Colors.grey.shade700,
+                ),
               ),
             ),
           ],
@@ -341,7 +432,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text("Cancel"),
+            child: Text(
+              "Cancel",
+              style: TextStyle(
+                color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
+              ),
+            ),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -360,9 +456,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   // প্রাইভেসি পলিসি বটম শিট
-  void _showPrivacyPolicyBottomSheet(BuildContext context) {
+  void _showPrivacyPolicyBottomSheet(
+    BuildContext context,
+    bool isDark,
+    Color cardColor,
+    Color textColor,
+    Color subtitleColor,
+  ) {
     showModalBottomSheet(
       context: context,
+      backgroundColor: cardColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -373,13 +476,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 "Privacy Policy & Terms",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: textColor,
+                ),
               ),
               const SizedBox(height: 15),
-              const Text(
+              Text(
                 "Your data security is our top priority. We encrypt all your personal information and documents securely. Location data is only used during active shifts.",
+                style: TextStyle(color: subtitleColor, fontSize: 13, height: 1.4),
               ),
               const SizedBox(height: 20),
               SizedBox(
@@ -401,14 +509,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   // লগআউট কনফার্মেশন ডায়ালগ
-  void _showLogoutDialog(BuildContext context) {
+  void _showLogoutDialog(
+    BuildContext context,
+    bool isDark,
+    Color cardColor,
+    Color textColor,
+    Color subtitleColor,
+  ) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: cardColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text("Log Out"),
-        content: const Text(
+        title: Text(
+          "Log Out",
+          style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
+        ),
+        content: Text(
           "Are you sure you want to sign out from your account?",
+          style: TextStyle(color: subtitleColor),
         ),
         actions: [
           TextButton(
@@ -423,7 +542,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             onPressed: () {
               Navigator.pop(context);
               _showToast(context, "Logged out successfully!");
-              // এখানে চাইলে লগইন পেজে রিডাইরেক্ট করার কোড বসাতে পারো
             },
             child: const Text("Log Out"),
           ),
@@ -439,40 +557,44 @@ class _SettingsScreenState extends State<SettingsScreen> {
     required String title,
     required String subtitle,
     required bool value,
+    required Color cardColor,
+    required Color textColor,
+    required Color subtitleColor,
+    required Color borderColor,
     required ValueChanged<bool> onChanged,
   }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: cardColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: lightTeal.withValues(alpha: 0.15), width: 1),
+        border: Border.all(color: borderColor, width: 1),
       ),
       child: SwitchListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         secondary: CircleAvatar(
-          backgroundColor: iconColor.withValues(alpha: 0.12),
+          backgroundColor: iconColor.withValues(alpha: 0.15),
           child: Icon(icon, color: iconColor),
         ),
         title: Text(
           title,
-          style: const TextStyle(
+          style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 14,
-            color: Colors.black87,
+            color: textColor,
           ),
         ),
         subtitle: Padding(
           padding: const EdgeInsets.only(top: 4),
           child: Text(
             subtitle,
-            style: const TextStyle(color: Colors.grey, fontSize: 12),
+            style: TextStyle(color: subtitleColor, fontSize: 12),
           ),
         ),
         value: value,
-        activeTrackColor: primaryTeal,
+        activeTrackColor: lightTeal,
         inactiveThumbColor: Colors.grey.shade400,
-        inactiveTrackColor: Colors.grey.shade200,
+        inactiveTrackColor: _darkMode ? Colors.grey.shade800 : Colors.grey.shade200,
         onChanged: onChanged,
       ),
     );
@@ -484,37 +606,41 @@ class _SettingsScreenState extends State<SettingsScreen> {
     required Color iconColor,
     required String title,
     required String subtitle,
+    required Color cardColor,
+    required Color textColor,
+    required Color subtitleColor,
+    required Color borderColor,
     required VoidCallback onTap,
   }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: cardColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: lightTeal.withValues(alpha: 0.15), width: 1),
+        border: Border.all(color: borderColor, width: 1),
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         leading: CircleAvatar(
-          backgroundColor: iconColor.withValues(alpha: 0.12),
+          backgroundColor: iconColor.withValues(alpha: 0.15),
           child: Icon(icon, color: iconColor),
         ),
         title: Text(
           title,
-          style: const TextStyle(
+          style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 14,
-            color: Colors.black87,
+            color: textColor,
           ),
         ),
         subtitle: Padding(
           padding: const EdgeInsets.only(top: 4),
           child: Text(
             subtitle,
-            style: const TextStyle(color: Colors.grey, fontSize: 12),
+            style: TextStyle(color: subtitleColor, fontSize: 12),
           ),
         ),
-        trailing: Icon(Icons.arrow_forward_ios, size: 14, color: primaryTeal),
+        trailing: Icon(Icons.arrow_forward_ios, size: 14, color: lightTeal),
         onTap: onTap,
       ),
     );

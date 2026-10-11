@@ -8,6 +8,7 @@ import 'package:kinvera/elderly%20member/elderly_member_registration.dart';
 import 'package:kinvera/elderly%20member/elderly_page.dart';
 import 'package:kinvera/family%20member/family_page.dart';
 import 'package:kinvera/family%20member/family_registration.dart';
+import 'package:kinvera/admin/admin_dashboard.dart';
 
 class SignInScreen extends StatefulWidget {
   final String role;
@@ -25,6 +26,15 @@ class _SignInScreenState extends State<SignInScreen> {
   // Controllers for text fields & validation
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.role == "System Administrator") {
+      emailController.text = "admin@kinvera.org";
+      passwordController.text = "admin123";
+    }
+  }
 
   @override
   void dispose() {
@@ -187,6 +197,11 @@ class _SignInScreenState extends State<SignInScreen> {
         context,
         MaterialPageRoute(builder: (context) => const ElderlyDashboardScreen()),
       );
+    } else if (widget.role == "System Administrator") {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const AdminDashboardScreen()),
+      );
     }
   }
 
@@ -219,6 +234,8 @@ class _SignInScreenState extends State<SignInScreen> {
                       ? Icons.volunteer_activism
                       : widget.role == "Family Member"
                       ? Icons.family_restroom
+                      : widget.role == "System Administrator"
+                      ? Icons.admin_panel_settings
                       : Icons.elderly,
                   size: 60,
                   color: primaryTeal,
@@ -335,48 +352,61 @@ class _SignInScreenState extends State<SignInScreen> {
               const SizedBox(height: 20),
 
               // SIGN UP BUTTON ACTION
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("no_account").tr(),
-                  TextButton(
-                    onPressed: () {
-                      if (widget.role == "Care Ambassador") {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                const AmbassadorRegistrationScreen(),
-                          ),
-                        );
-                      } else if (widget.role == "Family Member") {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                const FamilyRegistrationScreen(),
-                          ),
-                        );
-                      } else if (widget.role == "Elderly Member") {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                const ElderlyRegistrationScreen(),
-                          ),
-                        );
-                      }
-                    },
-                    child: Text(
-                      "sign_up_btn".tr(),
-                      style: TextStyle(
-                        color: primaryTeal,
-                        fontWeight: FontWeight.bold,
+              if (widget.role != "System Administrator")
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text("no_account").tr(),
+                    TextButton(
+                      onPressed: () {
+                        if (widget.role == "Care Ambassador") {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const AmbassadorRegistrationScreen(),
+                            ),
+                          );
+                        } else if (widget.role == "Family Member") {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const FamilyRegistrationScreen(),
+                            ),
+                          );
+                        } else if (widget.role == "Elderly Member") {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const ElderlyRegistrationScreen(),
+                            ),
+                          );
+                        }
+                      },
+                      child: Text(
+                        "sign_up_btn".tr(),
+                        style: TextStyle(
+                          color: primaryTeal,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
+                  ],
+                )
+              else
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade100,
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                ],
-              ),
+                  child: const Text(
+                    "Master Administrator Account (Pre-configured credentials)",
+                    style: TextStyle(color: Colors.grey, fontSize: 12),
+                  ),
+                ),
             ],
           ),
         ),

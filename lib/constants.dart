@@ -12,6 +12,15 @@ class AppColors {
   static const Color black87 = Colors.black87;
   static const Color grey = Colors.grey;
 
+  // ডার্ক মোড কালার প্যালেট
+  static const Color darkBackground = Color(0xFF111827); // Deep slate
+  static const Color darkCard = Color(0xFF1F2937);       // Dark slate card
+  static const Color darkSurface = Color(0xFF374151);    // Surface container
+  static const Color darkBorder = Color(0xFF4B5563);     // Subtle border
+  static const Color darkTextPrimary = Color(0xFFF9FAFB);// White text
+  static const Color darkTextSecondary = Color(0xFF9CA3AF); // Muted text
+  static const Color darkAppBar = Color(0xFF0D1B2A);
+
   // প্রফেশনাল UI এবং স্ট্যাটাসের জন্য অতিরিক্ত কালার
   static const Color borderLight = Color(0xFFE2E8F0);
   static const Color textMuted = Color(0xFF64748B);
