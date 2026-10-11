@@ -2,14 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import '../screens/role_selection_screen.dart';
 
-class LanguageSelectionScreen extends StatelessWidget {
+class LanguageSelectionScreen extends StatefulWidget {
   const LanguageSelectionScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    const Color primaryTeal = Color(0xFF0F766E);
-    const Color mintAccent = Color(0xFF14B8A6);
+  State<LanguageSelectionScreen> createState() =>
+      _LanguageSelectionScreenState();
+}
 
+class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
+  final Color primaryTeal = const Color(0xFF0F766E);
+  final Color mintAccent = const Color(0xFF14B8A6);
+
+  bool _isLoadingEn = false;
+  bool _isLoadingBn = false;
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF4F7FA),
       body: Center(
@@ -37,11 +46,7 @@ class LanguageSelectionScreen extends StatelessWidget {
                     color: mintAccent.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
-                    Icons.language,
-                    size: 50,
-                    color: primaryTeal,
-                  ),
+                  child: Icon(Icons.language, size: 50, color: primaryTeal),
                 ),
                 const SizedBox(height: 20),
                 const Text(
@@ -59,7 +64,7 @@ class LanguageSelectionScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 35),
 
-                // English Button
+                // English Button (Fully Active with Loading)
                 SizedBox(
                   width: double.infinity,
                   height: 50,
@@ -72,28 +77,47 @@ class LanguageSelectionScreen extends StatelessWidget {
                       ),
                       elevation: 2,
                     ),
-                    onPressed: () {
-                      context.setLocale(const Locale('en', 'US'));
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const RoleSelectionScreen(),
-                        ),
-                      );
-                    },
-                    child: const Text(
-                      "English",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    onPressed: _isLoadingEn || _isLoadingBn
+                        ? null
+                        : () async {
+                            setState(() {
+                              _isLoadingEn = true;
+                            });
+                            await context.setLocale(const Locale('en', 'US'));
+                            await Future.delayed(
+                              const Duration(milliseconds: 500),
+                            );
+                            if (!mounted) return;
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const RoleSelectionScreen(),
+                              ),
+                            );
+                          },
+                    child: _isLoadingEn
+                        ? const SizedBox(
+                            width: 22,
+                            height: 22,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : const Text(
+                            "English",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                   ),
                 ),
 
                 const SizedBox(height: 16),
 
-                // Bangla Button
+                // Bangla Button (Fully Active with Loading)
                 SizedBox(
                   width: double.infinity,
                   height: 50,
@@ -101,28 +125,47 @@ class LanguageSelectionScreen extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: primaryTeal,
-                      side: const BorderSide(color: primaryTeal, width: 1.5),
+                      side: BorderSide(color: primaryTeal, width: 1.5),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                       elevation: 0,
                     ),
-                    onPressed: () {
-                      context.setLocale(const Locale('bn', 'BD'));
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const RoleSelectionScreen(),
-                        ),
-                      );
-                    },
-                    child: const Text(
-                      "বাংলা",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    onPressed: _isLoadingEn || _isLoadingBn
+                        ? null
+                        : () async {
+                            setState(() {
+                              _isLoadingBn = true;
+                            });
+                            await context.setLocale(const Locale('bn', 'BD'));
+                            await Future.delayed(
+                              const Duration(milliseconds: 500),
+                            );
+                            if (!mounted) return;
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const RoleSelectionScreen(),
+                              ),
+                            );
+                          },
+                    child: _isLoadingBn
+                        ? SizedBox(
+                            width: 22,
+                            height: 22,
+                            child: CircularProgressIndicator(
+                              color: primaryTeal,
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : const Text(
+                            "বাংলা",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                   ),
                 ),
               ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kinvera/screens/role_selection_screen.dart'; // RoleSelectionScreen পাওয়ার জন্য main.dart ইমপোর্ট করা হলো
+import 'package:kinvera/ambassador/confirmation_letters_screen.dart';
+import 'package:kinvera/screens/role_selection_screen.dart';
 import 'profile_screen.dart';
 import 'certificate_screen.dart';
 import 'payment_history_screen.dart';
@@ -52,7 +53,21 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
                 ),
               ],
             ),
-            onPressed: () {},
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text("Notifications"),
+                  content: const Text("You have 3 new shift update alerts."),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text("Close"),
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
         ],
       ),
@@ -64,13 +79,13 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
           children: [
             _buildDutyStatusCard(),
             const SizedBox(height: 16),
-            _buildEarningsCard(),
+            _buildEarningsCard(context),
             const SizedBox(height: 16),
-            _buildStatsBar(),
+            _buildStatsBar(context), // এখন এটি সম্পূর্ণ সচল
             const SizedBox(height: 16),
             _buildShiftReminderCard(context),
             const SizedBox(height: 16),
-            _buildFeedbackCard(),
+            _buildFeedbackCard(context),
             const SizedBox(height: 16),
             const Text(
               "Quick Actions",
@@ -83,11 +98,11 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
             const SizedBox(height: 10),
             _buildQuickInfoGrid(context),
             const SizedBox(height: 16),
-            _buildNoticeBoard(),
+            _buildNoticeBoard(context),
             const SizedBox(height: 16),
-            _buildRecognitionCard(),
+            _buildRecognitionCard(context),
             const SizedBox(height: 24),
-            _buildHelplineSection(),
+            _buildHelplineSection(context),
             const SizedBox(height: 16),
           ],
         ),
@@ -103,8 +118,8 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
             decoration: BoxDecoration(
               gradient: LinearGradient(colors: [primaryTeal, mintAccent]),
             ),
-            accountName: const Text("Jennie Akter"),
-            accountEmail: const Text("jennieakter@gmail.com"),
+            accountName: const Text("Sumaiya Shahara"),
+            accountEmail: const Text("sumaiyashahara@gmail.com"),
             currentAccountPicture: CircleAvatar(
               backgroundColor: Colors.white,
               child: Icon(Icons.person, size: 40, color: primaryTeal),
@@ -187,7 +202,6 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
             },
           ),
           const Divider(),
-
           ListTile(
             leading: Icon(
               Icons.admin_panel_settings_outlined,
@@ -196,6 +210,7 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
             title: const Text("Message to CEO"),
             trailing: const Icon(Icons.arrow_forward_ios, size: 16),
             onTap: () {
+              Navigator.pop(context);
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -208,6 +223,7 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
             leading: const Icon(Icons.support_agent),
             title: const Text("Help & Support"),
             onTap: () {
+              Navigator.pop(context);
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -216,11 +232,11 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
               );
             },
           ),
-
           ListTile(
             leading: const Icon(Icons.settings),
             title: const Text("Settings"),
             onTap: () {
+              Navigator.pop(context);
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -230,14 +246,11 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
             },
           ),
           const Divider(),
-
-          // লগআউট অপশন এবং রোল সিলেকশনে রিডাইরেক্ট করার লজিক
           ListTile(
             leading: const Icon(Icons.logout, color: Colors.red),
             title: const Text("Logout", style: TextStyle(color: Colors.red)),
             onTap: () {
-              Navigator.pop(context); // ড্রয়ার বন্ধ করা হলো
-
+              Navigator.pop(context);
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
@@ -248,21 +261,15 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
-                        title: Row(
-                          children: const [
+                        title: const Row(
+                          children: [
                             Icon(
                               Icons.logout_rounded,
                               color: Colors.red,
                               size: 28,
                             ),
                             SizedBox(width: 8),
-                            Text(
-                              "Log Out",
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                            Text("Log Out"),
                           ],
                         ),
                         content: Column(
@@ -271,20 +278,13 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
                           children: [
                             const Text(
                               "Are you sure you want to sign out from your account?",
-                              style: TextStyle(
-                                color: Colors.black87,
-                                fontSize: 14,
-                              ),
                             ),
                             const SizedBox(height: 16),
                             CheckboxListTile(
                               contentPadding: EdgeInsets.zero,
                               title: const Text(
                                 "Remember this device for quick login",
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                                style: TextStyle(fontSize: 13),
                               ),
                               value: rememberDevice,
                               activeColor: primaryTeal,
@@ -300,30 +300,15 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context),
-                            child: const Text(
-                              "Cancel",
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                            child: const Text("Cancel"),
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.red,
                               foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              elevation: 0,
                             ),
                             onPressed: () {
-                              if (rememberDevice) {
-                                // ডিভাইস সেভ করার লজিক
-                              }
-                              Navigator.pop(context); // ডায়ালগ বন্ধ হবে
-
-                              // লগআউট করার পর সরাসরি রোল সিলেকশন স্ক্রিনে নিয়ে যাওয়া হবে
+                              Navigator.pop(context);
                               Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
@@ -333,10 +318,7 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
                                 (route) => false,
                               );
                             },
-                            child: const Text(
-                              "Log Out",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
+                            child: const Text("Log Out"),
                           ),
                         ],
                       );
@@ -401,7 +383,7 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
     );
   }
 
-  Widget _buildEarningsCard() {
+  Widget _buildEarningsCard(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -437,7 +419,40 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text("Withdraw Earnings"),
+                  content: const Text(
+                    "Your current balance is ৳ 15,400. Do you want to withdraw via Bkash?",
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text("Cancel"),
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryTeal,
+                        foregroundColor: Colors.white,
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              "Withdrawal request submitted successfully!",
+                            ),
+                          ),
+                        );
+                      },
+                      child: const Text("Confirm"),
+                    ),
+                  ],
+                ),
+              );
+            },
             child: const Text("Withdraw"),
           ),
         ],
@@ -445,47 +460,65 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
     );
   }
 
-  Widget _buildStatsBar() {
+  // পরিসংখ্যান বারকে সচল করা হয়েছে
+  Widget _buildStatsBar(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 10),
       decoration: BoxDecoration(
         gradient: LinearGradient(colors: [primaryTeal, mintAccent]),
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: mintAccent.withValues(alpha: 0.3),
-            blurRadius: 6,
-            spreadRadius: 2,
-          ),
-        ],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _statItem("Applied", "1026"),
-          _statItem("Shortlisted", "0"),
-          _statItem("Appointed", "1"),
-          _statItem("Confirmed", "14"),
-          _statItem("Cancelled", "31"),
+          _statItem(context, "Applied", "1026"),
+          _statItem(context, "Shortlisted", "5"),
+          _statItem(context, "Appointed", "1"),
+          _statItem(context, "Confirmed", "14"),
+          _statItem(context, "Cancelled", "31"),
         ],
       ),
     );
   }
 
-  Widget _statItem(String label, String count) => Column(
-    children: [
-      Text(
-        count,
-        style: const TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-          fontSize: 14,
-        ),
+  Widget _statItem(BuildContext context, String label, String count) {
+    return InkWell(
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text("$label Status"),
+            content: Text(
+              "You have $count $label shifts/applications recorded.",
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("Close"),
+              ),
+            ],
+          ),
+        );
+      },
+      child: Column(
+        children: [
+          Text(
+            count,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            label,
+            style: const TextStyle(color: Colors.white70, fontSize: 9),
+          ),
+        ],
       ),
-      const SizedBox(height: 2),
-      Text(label, style: const TextStyle(color: Colors.white70, fontSize: 9)),
-    ],
-  );
+    );
+  }
 
   Widget _buildShiftReminderCard(BuildContext context) {
     return Card(
@@ -514,7 +547,7 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
     );
   }
 
-  Widget _buildFeedbackCard() {
+  Widget _buildFeedbackCard(BuildContext context) {
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -529,7 +562,12 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
         ),
         subtitle: const Text("Please let us know your care update."),
         trailing: const Icon(Icons.chevron_right),
-        onTap: () {},
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const MessageToCeoScreen()),
+          );
+        },
       ),
     );
   }
@@ -556,8 +594,43 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
             );
           },
         ),
-        _infoBox("Nearby Jobs", Icons.work, primaryTeal, count: "99+"),
-        _infoBox("Confirmation Letter", Icons.email, Colors.orange, count: "5"),
+        _infoBox(
+          "Nearby Jobs",
+          Icons.work,
+          primaryTeal,
+          count: "99+",
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: const Text("Nearby Jobs"),
+                content: const Text(
+                  "99+ Care shifts available in Gulshan, Banani, and Uttara.",
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text("OK"),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+        _infoBox(
+          "Confirmation Letter",
+          Icons.email,
+          Colors.orange,
+          count: "5",
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ConfirmationLettersScreen(),
+              ),
+            );
+          },
+        ),
         _infoBox(
           "Invoices",
           Icons.receipt_long,
@@ -628,85 +701,142 @@ class _AmbassadorDashboardState extends State<AmbassadorDashboard> {
     ),
   );
 
-  Widget _buildNoticeBoard() {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: const Padding(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.campaign, color: Colors.amber, size: 20),
-                SizedBox(width: 8),
-                Text(
-                  "Notice Board",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                ),
-              ],
+  Widget _buildNoticeBoard(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text("Notice Board Details"),
+            content: const Text(
+              "Our Care Ambassador of the Month, May 2026 has been successfully announced. Keep up the great work!",
             ),
-            SizedBox(height: 8),
-            Text(
-              "Our Care Ambassador of the Month, May 2026 is announced! Check details inside.",
-              style: TextStyle(fontSize: 13, color: Colors.black54),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildRecognitionCard() {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: const ListTile(
-        leading: CircleAvatar(
-          backgroundColor: Colors.amber,
-          child: Icon(Icons.star, color: Colors.white),
-        ),
-        title: Text(
-          "Care Ambassador of the Month",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-        ),
-        subtitle: Text("ID: 418613 | 5.0 Rating ⭐"),
-      ),
-    );
-  }
-
-  Widget _buildHelplineSection() {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: mintAccent.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: mintAccent.withValues(alpha: 0.3)),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.headset_mic, color: primaryTeal),
-          const SizedBox(width: 10),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                "Need Help? Call Helpline",
-                style: TextStyle(fontSize: 11, color: Colors.black54),
-              ),
-              Text(
-                "+880 9612-345678",
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: primaryTeal,
-                ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("Close"),
               ),
             ],
           ),
-        ],
+        );
+      },
+      child: Card(
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: const Padding(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.campaign, color: Colors.amber, size: 20),
+                  SizedBox(width: 8),
+                  Text(
+                    "Notice Board",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  ),
+                ],
+              ),
+              SizedBox(height: 8),
+              Text(
+                "Our Care Ambassador of the Month, May 2026 is announced! Check details inside.",
+                style: TextStyle(fontSize: 13, color: Colors.black54),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRecognitionCard(BuildContext context) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: ListTile(
+        leading: const CircleAvatar(
+          backgroundColor: Colors.amber,
+          child: Icon(Icons.star, color: Colors.white),
+        ),
+        title: const Text(
+          "Care Ambassador of the Month",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+        ),
+        subtitle: const Text("ID: 418613 | 5.0 Rating ⭐"),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const MyReviewsScreen()),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildHelplineSection(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text("Helpline Support"),
+            content: const Text(
+              "Do you want to call the 24/7 helpline at +880 9612-345678?",
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("Cancel"),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: primaryTeal,
+                  foregroundColor: Colors.white,
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Calling helpline...")),
+                  );
+                },
+                child: const Text("Call Now"),
+              ),
+            ],
+          ),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: mintAccent.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: mintAccent.withValues(alpha: 0.3)),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.headset_mic, color: primaryTeal),
+            const SizedBox(width: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Need Help? Call Helpline",
+                  style: TextStyle(fontSize: 11, color: Colors.black54),
+                ),
+                Text(
+                  "+880 9612-345678",
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: primaryTeal,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

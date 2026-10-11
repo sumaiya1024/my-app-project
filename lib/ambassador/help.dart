@@ -74,7 +74,7 @@ class HelpSupportScreen extends StatelessWidget {
           ),
           const SizedBox(height: 10),
 
-          // কন্টাক্ট কার্ডসমূহ (কালারফুল সার্কেল আইকনসহ)
+          // কন্টাক্ট কার্ডসমূহ (ফুললি সচল)
           _buildSupportCard(
             context,
             icon: Icons.phone_in_talk_rounded,
@@ -82,7 +82,13 @@ class HelpSupportScreen extends StatelessWidget {
             title: "Call Helpline",
             subtitle: "+880 9612-345678 (24/7)",
             onTap: () {
-              // কল করার লজিক এখানে যুক্ত করুন
+              _showActionDialog(
+                context,
+                "Call Helpline",
+                "Do you want to call our 24/7 helpline at +880 9612-345678?",
+                Icons.phone,
+                Colors.green,
+              );
             },
           ),
           _buildSupportCard(
@@ -92,7 +98,29 @@ class HelpSupportScreen extends StatelessWidget {
             title: "Live Chat Support",
             subtitle: "Chat instantly with our support executive",
             onTap: () {
-              // লাইভ চ্যাট লজিক এখানে যুক্ত করুন
+              _showActionDialog(
+                context,
+                "Live Chat",
+                "Connecting you to an available support executive...",
+                Icons.chat,
+                Colors.blue,
+              );
+            },
+          ),
+          _buildSupportCard(
+            context,
+            icon: Icons.message_rounded,
+            iconColor: Colors.teal,
+            title: "WhatsApp Support",
+            subtitle: "Chat with us directly on WhatsApp",
+            onTap: () {
+              _showActionDialog(
+                context,
+                "WhatsApp Support",
+                "Opening WhatsApp chat channel with Kinvera Care...",
+                Icons.message,
+                Colors.teal,
+              );
             },
           ),
           _buildSupportCard(
@@ -102,7 +130,13 @@ class HelpSupportScreen extends StatelessWidget {
             title: "Email Support",
             subtitle: "support@kinvera.com",
             onTap: () {
-              // ইমেইল লজিক এখানে যুক্ত করুন
+              _showActionDialog(
+                context,
+                "Email Support",
+                "Send your queries to support@kinvera.com. We reply within 2 hours.",
+                Icons.email,
+                Colors.orange,
+              );
             },
           ),
 
@@ -125,7 +159,7 @@ class HelpSupportScreen extends StatelessWidget {
             title: "Frequently Asked Questions",
             subtitle: "Find answers to common questions",
             onTap: () {
-              // FAQ লজিক এখানে যুক্ত করুন
+              _showFaqBottomSheet(context);
             },
           ),
           _buildSupportCard(
@@ -135,7 +169,17 @@ class HelpSupportScreen extends StatelessWidget {
             title: "Ambassador Guidebook",
             subtitle: "Learn how to manage shifts and services",
             onTap: () {
-              // গাইডবুক লজিক এখানে যুক্ত করুন
+              _showGuidebookBottomSheet(context);
+            },
+          ),
+          _buildSupportCard(
+            context,
+            icon: Icons.bug_report_rounded,
+            iconColor: Colors.redAccent,
+            title: "Report a Technical Issue",
+            subtitle: "Facing app bugs? Let us know",
+            onTap: () {
+              _showBugReportDialog(context);
             },
           ),
         ],
@@ -182,6 +226,166 @@ class HelpSupportScreen extends StatelessWidget {
         ),
         trailing: Icon(Icons.arrow_forward_ios, size: 14, color: primaryTeal),
         onTap: onTap,
+      ),
+    );
+  }
+
+  // সাধারণ ইনফো বা অ্যাকশন দেখানোর ডায়ালগ
+  void _showActionDialog(
+    BuildContext context,
+    String title,
+    String message,
+    IconData icon,
+    Color color,
+  ) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(
+          children: [
+            Icon(icon, color: color),
+            const SizedBox(width: 8),
+            Text(title),
+          ],
+        ),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              "OK",
+              style: TextStyle(color: primaryTeal, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // FAQ দেখানোর জন্য বটম শিট
+  void _showFaqBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Frequently Asked Questions",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 15),
+              const Text(
+                "Q: How do I get paid?\nA: Payments are processed weekly via Bkash, Nagad, or Bank transfer.",
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                "Q: How to cancel a shift?\nA: You can manage shifts from the Shift Scheduler section.",
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryTeal,
+                    foregroundColor: Colors.white,
+                  ),
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("Close"),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // গাইডবুক দেখানোর জন্য বটম শিট
+  void _showGuidebookBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Ambassador Guidebook",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 15),
+              const Text(
+                "• Always arrive 10 minutes prior to shift time.\n• Keep your documents verified to get premium shifts.\n• Maintain professional behavior with clients.",
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryTeal,
+                    foregroundColor: Colors.white,
+                  ),
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("Got It"),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // বাগ রিপোর্ট ডায়ালগ
+  void _showBugReportDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text("Report an Issue"),
+        content: const TextField(
+          maxLines: 3,
+          decoration: InputDecoration(
+            hintText: "Describe the bug or issue...",
+            border: OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel"),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: primaryTeal,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text(
+                    "Bug report submitted successfully! Thank you.",
+                  ),
+                ),
+              );
+            },
+            child: const Text("Submit"),
+          ),
+        ],
       ),
     );
   }

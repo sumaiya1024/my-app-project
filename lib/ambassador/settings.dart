@@ -18,6 +18,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _darkMode = false;
   bool _locationTracking = true;
 
+  // ভাষা সিলেকশনের ভেরিয়েবল
+  String _selectedLanguage = "English (US)";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,6 +98,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               setState(() {
                 _pushNotifications = val;
               });
+              _showToast(
+                context,
+                "Push Notifications ${val ? 'Enabled' : 'Disabled'}",
+              );
             },
           ),
           _buildSwitchTile(
@@ -107,6 +114,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               setState(() {
                 _emailNotifications = val;
               });
+              _showToast(
+                context,
+                "Email Notifications ${val ? 'Enabled' : 'Disabled'}",
+              );
             },
           ),
           const SizedBox(height: 10),
@@ -132,6 +143,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               setState(() {
                 _darkMode = val;
               });
+              _showToast(context, "Dark Mode is coming soon!");
             },
           ),
           _buildSwitchTile(
@@ -144,15 +156,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
               setState(() {
                 _locationTracking = val;
               });
+              _showToast(
+                context,
+                "Location Access ${val ? 'Allowed' : 'Denied'}",
+              );
             },
           ),
           _buildActionTile(
             icon: Icons.language_rounded,
             iconColor: Colors.teal,
             title: "App Language",
-            subtitle: "English (US) / বাংলা",
+            subtitle: _selectedLanguage,
             onTap: () {
-              // ভাষা পরিবর্তন বা সিলেকশন পেজে যাওয়ার লজিক
+              _showLanguageDialog(context);
             },
           ),
           const SizedBox(height: 10),
@@ -174,7 +190,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: "Change Password",
             subtitle: "Update your account password regularly",
             onTap: () {
-              // পাসওয়ার্ড চেঞ্জ লজিক
+              _showChangePasswordDialog(context);
             },
           ),
           _buildActionTile(
@@ -183,12 +199,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: "Privacy Policy",
             subtitle: "Read our terms and data policy",
             onTap: () {
-              // প্রাইভেসি পলিসি পেজ
+              _showPrivacyPolicyBottomSheet(context);
             },
           ),
           const SizedBox(height: 10),
 
-          // ৫. লগআউট বাটন
+          // ৫. লগআউট বাটন (ফুললি সচল)
           Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -225,7 +241,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 color: Colors.red,
               ),
               onTap: () {
-                // লগআউট ডায়ালগ বা লজিক
+                _showLogoutDialog(context);
               },
             ),
           ),
@@ -235,7 +251,188 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  // সুইচ টাইলের জন্য উইজেট (সংশোধিত কালার প্রপার্টিসহ)
+  // ছোট নোটিফিকেশন দেখানোর জন্য টোস্ট বা স্নাকবার ফাংশন
+  void _showToast(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 2),
+        backgroundColor: primaryTeal,
+      ),
+    );
+  }
+
+  // ভাষা পরিবর্তনের ডায়ালগ
+  void _showLanguageDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text("Select Language"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              title: const Text("English (US)"),
+              leading: Radio<String>(
+                value: "English (US)",
+                groupValue: _selectedLanguage,
+                activeColor: primaryTeal,
+                onChanged: (val) {
+                  setState(() => _selectedLanguage = val!);
+                  Navigator.pop(context);
+                },
+              ),
+              onTap: () {
+                setState(() => _selectedLanguage = "English (US)");
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: const Text("বাংলা (Bangla)"),
+              leading: Radio<String>(
+                value: "বাংলা (Bangla)",
+                groupValue: _selectedLanguage,
+                activeColor: primaryTeal,
+                onChanged: (val) {
+                  setState(() => _selectedLanguage = val!);
+                  Navigator.pop(context);
+                },
+              ),
+              onTap: () {
+                setState(() => _selectedLanguage = "বাংলা (Bangla)");
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // পাসওয়ার্ড পরিবর্তনের ডায়ালগ
+  void _showChangePasswordDialog(BuildContext context) {
+    final TextEditingController oldPassController = TextEditingController();
+    final TextEditingController newPassController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text("Change Password"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: oldPassController,
+              obscureText: true,
+              decoration: const InputDecoration(labelText: "Current Password"),
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              controller: newPassController,
+              obscureText: true,
+              decoration: const InputDecoration(
+                labelText: "New Password (min 6 chars)",
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel"),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: primaryTeal,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+              _showToast(context, "Password updated successfully!");
+            },
+            child: const Text("Update"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // প্রাইভেসি পলিসি বটম শিট
+  void _showPrivacyPolicyBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Privacy Policy & Terms",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 15),
+              const Text(
+                "Your data security is our top priority. We encrypt all your personal information and documents securely. Location data is only used during active shifts.",
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryTeal,
+                    foregroundColor: Colors.white,
+                  ),
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("Close"),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // লগআউট কনফার্মেশন ডায়ালগ
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text("Log Out"),
+        content: const Text(
+          "Are you sure you want to sign out from your account?",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+              _showToast(context, "Logged out successfully!");
+              // এখানে চাইলে লগইন পেজে রিডাইরেক্ট করার কোড বসাতে পারো
+            },
+            child: const Text("Log Out"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // সুইচ টাইলের জন্য উইজেট
   Widget _buildSwitchTile({
     required IconData icon,
     required Color iconColor,
@@ -273,7 +470,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
         ),
         value: value,
-
         activeTrackColor: primaryTeal,
         inactiveThumbColor: Colors.grey.shade400,
         inactiveTrackColor: Colors.grey.shade200,

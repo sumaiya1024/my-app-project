@@ -17,16 +17,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   // টেক্সট কন্ট্রোলারসমূহ
   final TextEditingController _nameController = TextEditingController(
-    text: "Jennie Akter",
+    text: "Sumaiya Shahara",
   );
   final TextEditingController _phoneController = TextEditingController(
-    text: "+880 1712-345678",
+    text: "+880 1531984845",
   );
   final TextEditingController _emailController = TextEditingController(
-    text: "jennieakter@gmail.com",
+    text: "sumaiyashahara@gmail.com",
   );
   final TextEditingController _addressController = TextEditingController(
     text: "Gulshan-2, Dhaka, Bangladesh",
+  );
+  final TextEditingController _emergencyContactController =
+      TextEditingController(text: "+880 1812345678");
+  final TextEditingController _bioController = TextEditingController(
+    text:
+        "Professional Care Ambassador with 3+ years of experience in elderly and patient care.",
   );
 
   @override
@@ -35,10 +41,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _phoneController.dispose();
     _emailController.dispose();
     _addressController.dispose();
+    _emergencyContactController.dispose();
+    _bioController.dispose();
     super.dispose();
   }
 
-  // আনলক করার ডায়ালগ দেখানোর ফাংশন
+  // আনলক করার ডায়ালগ দেখানোর ফাংশন
   void _showUnlockDialog() {
     showDialog(
       context: context,
@@ -70,7 +78,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             onPressed: () {
               setState(() {
-                _isProfileLocked = false; // আনলক হয়ে গেল
+                _isProfileLocked = false; // আনলক হয়ে গেল
               });
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
@@ -92,16 +100,69 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // সেভ করার ফাংশন (সেভ করলে আবার লক হয়ে যাবে)
+  // সেভ করার ফাংশন (সেভ করলে আবার লক হয়ে যাবে)
   void _saveProfile() {
     setState(() {
-      _isProfileLocked = true; // সেভ করার পর আবার লক করে দেওয়া হলো
+      _isProfileLocked = true; // সেভ করার পর আবার লক করে দেওয়া হলো
     });
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text("Profile updated and locked successfully!"),
         backgroundColor: Colors.teal,
       ),
+    );
+  }
+
+  // প্রোফাইল পিকচার চেঞ্জ করার বটম শিট বা অপশন
+  void _showImageOptions() {
+    if (_isProfileLocked) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please unlock your profile first to change photo."),
+        ),
+      );
+      return;
+    }
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                "Profile Photo",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 15),
+              ListTile(
+                leading: Icon(Icons.camera_alt, color: primaryTeal),
+                title: const Text("Take a Photo"),
+                onTap: () {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Camera opened")),
+                  );
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.photo_library, color: primaryTeal),
+                title: const Text("Choose from Gallery"),
+                onTap: () {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Gallery opened")),
+                  );
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -141,6 +202,49 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // প্রোফাইল পিকচার সেকশন
+            Center(
+              child: Stack(
+                children: [
+                  CircleAvatar(
+                    radius: 50,
+                    backgroundColor: lightTeal.withValues(alpha: 0.2),
+                    child: Text(
+                      _nameController.text.isNotEmpty
+                          ? _nameController.text[0]
+                          : "S",
+                      style: TextStyle(
+                        fontSize: 36,
+                        fontWeight: FontWeight.bold,
+                        color: primaryTeal,
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: GestureDetector(
+                      onTap: _showImageOptions,
+                      child: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: primaryTeal,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 2),
+                        ),
+                        child: const Icon(
+                          Icons.camera_alt,
+                          color: Colors.white,
+                          size: 18,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+
             // ১. স্ট্যাটাস ব্যানার (লক নাকি আনলক তা বোঝানোর জন্য)
             Container(
               padding: const EdgeInsets.all(16),
@@ -235,7 +339,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               controller: _nameController,
               label: "Full Name",
               icon: Icons.person_outline,
-              enabled: !_isProfileLocked, // লক থাকলে এডিট করা যাবে না
+              enabled: !_isProfileLocked,
             ),
             const SizedBox(height: 14),
 
@@ -256,15 +360,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
             const SizedBox(height: 14),
 
             _buildTextField(
+              controller: _emergencyContactController,
+              label: "Emergency Contact",
+              icon: Icons.contact_phone_outlined,
+              enabled: !_isProfileLocked,
+            ),
+            const SizedBox(height: 14),
+
+            _buildTextField(
               controller: _addressController,
               label: "Address",
               icon: Icons.location_on_outlined,
               enabled: !_isProfileLocked,
               maxLines: 2,
             ),
+            const SizedBox(height: 14),
+
+            _buildTextField(
+              controller: _bioController,
+              label: "Professional Bio / Experience",
+              icon: Icons.info_outline,
+              enabled: !_isProfileLocked,
+              maxLines: 3,
+            ),
             const SizedBox(height: 24),
 
-            // ৩. সেভ বাটন (প্রোফাইল আনলক থাকলেই শুধু কাজ করবে বা দৃশ্যমান হবে)
+            // ৩. সেভ বাটন (প্রোফাইল আনলক থাকলেই শুধু দৃশ্যমান হবে)
             if (!_isProfileLocked)
               SizedBox(
                 width: double.infinity,

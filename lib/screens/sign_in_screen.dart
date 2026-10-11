@@ -9,8 +9,6 @@ import 'package:kinvera/elderly%20member/elderly_page.dart';
 import 'package:kinvera/family%20member/family_page.dart';
 import 'package:kinvera/family%20member/family_registration.dart';
 
-// Other Roles Imports (Family & Elderly)
-
 class SignInScreen extends StatefulWidget {
   final String role;
   const SignInScreen({super.key, required this.role});
@@ -22,12 +20,20 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   final Color primaryTeal = const Color(0xFF0F766E);
   bool isPasswordHidden = true;
+  bool _isLoading = false; // লোডিং স্টেট
 
   // Controllers for text fields & validation
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  // ফরেগট পাসওয়ার্ড ডায়ালগ পপআপ ফাংশন
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  // ফরেগট পাসওয়ার্ড ডায়ালগ পপআপ ফাংশন (ভ্যালিডেশনসহ)
   void _showForgotPasswordDialog(BuildContext context) {
     final TextEditingController resetEmailController = TextEditingController();
 
@@ -80,10 +86,26 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
               ),
               onPressed: () {
+                String resetEmail = resetEmailController.text.trim();
+                final emailRegex = RegExp(
+                  r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+                );
+
+                if (resetEmail.isEmpty || !emailRegex.hasMatch(resetEmail)) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Please enter a valid email address!"),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                  return;
+                }
+
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Text("Password reset link sent to your email!"),
+                    backgroundColor: Colors.green,
                   ),
                 );
               },
@@ -93,6 +115,79 @@ class _SignInScreenState extends State<SignInScreen> {
         );
       },
     );
+  }
+
+  // লগইন প্রসেস হ্যান্ডেল করার ফাংশন
+  void _handleSignIn() async {
+    String emailText = emailController.text.trim();
+    String passwordText = passwordController.text.trim();
+
+    final emailRegex = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    );
+
+    // স্ট্রিক্ট ভ্যালিডেশন চেক
+    if (emailText.isEmpty || !emailRegex.hasMatch(emailText)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please enter a valid email address!"),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    if (passwordText.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please enter your password!"),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    if (passwordText.length < 6) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Password must be at least 6 characters long!"),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+
+    // সব ঠিক থাকলে লোডিং শুরু হবে
+    setState(() {
+      _isLoading = true;
+    });
+
+    // ২ সেকেন্ড ফেক সার্ভার অথেন্টিকেশন সিমুলেশন
+    await Future.delayed(const Duration(seconds: 2));
+
+    if (!mounted) return;
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    // রোল অনুযায়ী নেভিগেশন
+    if (widget.role == "Care Ambassador") {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const AmbassadorDashboard()),
+      );
+    } else if (widget.role == "Family Member") {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const FamilyPage()),
+      );
+    } else if (widget.role == "Elderly Member") {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const ElderlyDashboardScreen()),
+      );
+    }
   }
 
   @override
@@ -147,6 +242,7 @@ class _SignInScreenState extends State<SignInScreen> {
               // Email Field
               TextField(
                 controller: emailController,
+                keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
                   labelText: "email_address".tr(),
                   prefixIcon: const Icon(Icons.email_outlined),
@@ -205,7 +301,7 @@ class _SignInScreenState extends State<SignInScreen> {
               ),
               const SizedBox(height: 10),
 
-              // LOGIN BUTTON WITH VALIDATION
+              // LOGIN BUTTON WITH LOADING STATE
               SizedBox(
                 width: double.infinity,
                 height: 50,
@@ -216,61 +312,24 @@ class _SignInScreenState extends State<SignInScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  onPressed: () {
-                    String passwordText = passwordController.text.trim();
-
-                    // Validation check: Password must not be empty and at least 6 chars
-                    if (passwordText.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("Please enter your password!"),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
-                    } else if (passwordText.length < 6) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            "Password must be at least 6 characters long!",
+                  onPressed: _isLoading ? null : _handleSignIn,
+                  child: _isLoading
+                      ? const SizedBox(
+                          height: 24,
+                          width: 24,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2.5,
                           ),
-                          backgroundColor: Colors.orange,
-                        ),
-                      );
-                    } else {
-                      // Navigate based on role if validation passes
-                      if (widget.role == "Care Ambassador") {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const AmbassadorDashboard(),
+                        )
+                      : const Text(
+                          "sign_in_btn",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
                           ),
-                        );
-                      } else if (widget.role == "Family Member") {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const FamilyPage(),
-                          ),
-                        );
-                      } else if (widget.role == "Elderly Member") {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                const ElderlyDashboardScreen(),
-                          ),
-                        );
-                      }
-                    }
-                  },
-                  child: const Text(
-                    "sign_in_btn",
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ).tr(),
+                        ).tr(),
                 ),
               ),
               const SizedBox(height: 20),

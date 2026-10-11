@@ -20,21 +20,41 @@ class MyDocumentsScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          _buildDocCard("NID Card / Passport", "Verified", primaryTeal),
-          _buildDocCard("Nursing Certificate", "Verified", primaryTeal),
           _buildDocCard(
+            context,
+            "NID Card / Passport",
+            "Verified",
+            primaryTeal,
+          ),
+          _buildDocCard(
+            context,
+            "Nursing Certificate",
+            "Verified",
+            primaryTeal,
+          ),
+          _buildDocCard(
+            context,
             "Police Clearance",
             "Pending Review",
             Colors.orange.shade800,
           ),
-          _buildDocCard("Medical Fitness Report", "Verified", primaryTeal),
+          _buildDocCard(
+            context,
+            "Medical Fitness Report",
+            "Verified",
+            primaryTeal,
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildDocCard(String title, String status, Color statusColor) {
-    // এখানে isVerified ঠিকঠাক কাজ করবে
+  Widget _buildDocCard(
+    BuildContext context,
+    String title,
+    String status,
+    Color statusColor,
+  ) {
     final bool isVerified = status == "Verified";
 
     return Card(
@@ -82,7 +102,72 @@ class MyDocumentsScreen extends StatelessWidget {
             size: 20,
           ),
         ),
-        onTap: () {},
+        // Now every card is fully active and shows a details bottom sheet on tap!
+        onTap: () {
+          showModalBottomSheet(
+            context: context,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            builder: (context) {
+              return Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.description, color: primaryTeal, size: 28),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            title,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 15),
+                    Text(
+                      "Status: $status",
+                      style: TextStyle(
+                        color: isVerified ? primaryTeal : statusColor,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      "This document is securely registered in your profile. You can view or manage it here.",
+                      style: TextStyle(color: Colors.grey, fontSize: 13),
+                    ),
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 45,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: primaryTeal,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text("Close"),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }

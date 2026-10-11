@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:open_filex/open_filex.dart';
 import 'dart:io';
 
@@ -11,7 +10,7 @@ class CertificateScreen extends StatelessWidget {
   final Color lightTeal = const Color(0xFF14B8A6);
   final Color backgroundColor = const Color(0xFFF4F7FA);
 
-  // পিসি ও মোবাইল উভয়ের জন্য একদম নিরাপদ ডাউনলোড ফাংশন
+  // পিসি ও মোবাইলের জন্য প্লাগইন ছাড়া ১০০% নিরাপদ ডাউনলোড ফাংশন
   Future<void> _downloadAndOpenCertificate(
     BuildContext context,
     String title,
@@ -26,14 +25,25 @@ class CertificateScreen extends StatelessWidget {
         ),
       );
 
-      // ডেস্কটপ এবং মোবাইল সব জায়গার জন্যই ডকুমেন্টস ডিরেক্টরি সেফ ও কাজ করে
-      Directory directory = await getApplicationDocumentsDirectory();
+      // উইন্ডোজ বা পিসির জন্য সরাসরি Downloads ফোল্ডার অথবা টেম্পোরারি ফোল্ডার ব্যবহার করা
+      Directory directory;
+      if (Platform.isWindows) {
+        final userProfile = Platform.environment['USERPROFILE'] ?? 'C:\\';
+        directory = Directory('$userProfile\\Downloads');
+        if (!directory.existsSync()) {
+          directory = Directory.systemTemp;
+        }
+      } else {
+        directory = Directory.systemTemp;
+      }
 
       String fileName = "${title.replaceAll(' ', '_')}.pdf";
       String filePath = "${directory.path}/$fileName";
 
-      // Dio দিয়ে ফাইল ডাউনলোড করা
+      // Dio দিয়ে ফাইল ডাউনলোড করা
       await Dio().download(url, filePath);
+
+      if (!context.mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -43,8 +53,18 @@ class CertificateScreen extends StatelessWidget {
       );
 
       // ফাইল ওপেন করা
-      await OpenFilex.open(filePath);
+      final result = await OpenFilex.open(filePath);
+      if (result.type != ResultType.done) {
+        if (!context.mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Could not open file: ${result.message}"),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
     } catch (e) {
+      if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Download Failed: $e"),
@@ -141,11 +161,95 @@ class CertificateScreen extends StatelessWidget {
 
             return GestureDetector(
               onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text("Selected: ${cert["title"]} (${cert["id"]})"),
-                    duration: const Duration(seconds: 2),
+                // কার্ডে ক্লিক করলে ডিটেইলস বটম শিট ওপেন হবে
+                showModalBottomSheet(
+                  context: context,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(20),
+                    ),
                   ),
+                  builder: (context) {
+                    return Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.workspace_premium,
+                                color: primaryTeal,
+                                size: 30,
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  cert["title"]!,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 15),
+                          Text(
+                            "Certificate ID: ${cert["id"]}",
+                            style: const TextStyle(color: Colors.black87),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            "Issue Date: ${cert["issueDate"]}",
+                            style: const TextStyle(color: Colors.black87),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            "Status: ${cert["status"]}",
+                            style: TextStyle(
+                              color: isVerified
+                                  ? primaryTeal
+                                  : Colors.orange.shade800,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          Row(
+                            children: [
+                              if (isVerified)
+                                Expanded(
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: primaryTeal,
+                                      foregroundColor: Colors.white,
+                                    ),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      _downloadAndOpenCertificate(
+                                        context,
+                                        cert["title"]!,
+                                        cert["downloadUrl"]!,
+                                      );
+                                    },
+                                    child: const Text("Download PDF"),
+                                  ),
+                                ),
+                              if (isVerified) const SizedBox(width: 10),
+                              Expanded(
+                                child: OutlinedButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text("Close"),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 );
               },
               child: Container(
@@ -211,6 +315,7 @@ class CertificateScreen extends StatelessWidget {
                       IconButton(
                         icon: Icon(Icons.download_outlined, color: primaryTeal),
                         onPressed: () {
+                          if (!context.mounted) return;
                           _downloadAndOpenCertificate(
                             context,
                             cert["title"]!,
